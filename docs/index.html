@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="tr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Çağlar Özenç">
+<title>Yazılımcılar İçin SQL Server 2025 · Çağlar Özenç</title>
+<meta name="description" content="SQL Server 2025 geliştirici e-book'u: vektör, JSON, RegEx, AI. Bol örnekli, canlı doğrulanmış. Çağlar Özenç, Microsoft Data Platform MVP.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Yazılımcılar İçin SQL Server 2025 · SQL Server 2025 for Developers">
+<meta property="og:description" content="Vektör, JSON, RegEx ve AI. Bol örnekli, canlı SQL Server 2025 (RTM-CU7) üzerinde doğrulanmış, iki dilli geliştirici rehberi.">
+<meta property="og:url" content="https://dmcteknoloji.github.io/sql-server-2025-gelistirici-kitabi/">
+<meta property="og:image" content="https://dmcteknoloji.github.io/sql-server-2025-gelistirici-kitabi/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Yazılımcılar İçin SQL Server 2025 · SQL Server 2025 for Developers">
+<meta name="twitter:description" content="Vektör, JSON, RegEx ve AI. Canlı doğrulanmış, iki dilli geliştirici rehberi. Çağlar Özenç, Microsoft Data Platform MVP.">
+<meta name="twitter:image" content="https://dmcteknoloji.github.io/sql-server-2025-gelistirici-kitabi/social-card.png">
+<style>
+  :root{--ink:#14202b;--soft:#44545f;--muted:#6e7c88;--teal:#0a6b73;--tealD:#08535a;--line:#dbe2e7;--bg:#eef1f3;--card:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",-apple-system,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55}
+  .wrap{max-width:960px;margin:0 auto;padding:0 22px}
+  header{background:linear-gradient(180deg,#fff, #f5f8f9);border-bottom:1px solid var(--line);padding:54px 0 40px}
+  header img{height:70px}
+  .kick{font-family:"Cascadia Code",Consolas,monospace;color:var(--teal);letter-spacing:2px;font-weight:700;font-size:14px;margin:26px 0 6px}
+  h1{font-size:clamp(2rem,5vw,3.2rem);margin:0 0 12px;letter-spacing:-.02em;line-height:1.06}
+  .sub{font-size:1.15rem;color:var(--soft);max-width:60ch;margin:0}
+  .rule{height:6px;width:120px;background:var(--teal);border-radius:3px;margin:22px 0 0}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:30px 0}
+  @media(max-width:680px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 22px;box-shadow:0 6px 24px rgba(20,32,43,.05)}
+  .card h2{margin:0 0 4px;font-size:1.25rem}
+  .flag{font-size:1.4rem;margin-right:8px}
+  .btns{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+  a.btn{display:inline-block;text-decoration:none;font-size:.92rem;font-weight:600;padding:9px 15px;border-radius:9px;border:1px solid var(--line);color:var(--tealD);background:#f3f8f8}
+  a.btn.primary{background:var(--teal);color:#fff;border-color:var(--teal)}
+  a.btn:hover{border-color:var(--teal)}
+  section.feat{margin:34px 0}
+  section.feat h3{font-size:.95rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-family:"Cascadia Code",monospace}
+  ul.f{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 22px}
+  @media(max-width:680px){ul.f{grid-template-columns:1fr}}
+  ul.f li{padding:8px 0;border-bottom:1px solid var(--line);color:var(--soft)}
+  ul.f b{color:var(--ink)}
+  .author{display:flex;gap:20px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:30px 0}
+  .author img{width:96px;height:96px;border-radius:50%;object-fit:cover;object-position:top}
+  .author .n{font-weight:700;font-size:1.1rem}
+  .author .t{color:var(--muted);font-size:.95rem}
+  .author a{color:var(--tealD)}
+  footer{border-top:1px solid var(--line);color:var(--muted);font-size:.85rem;padding:26px 0 50px;margin-top:20px}
+  a{color:var(--tealD)}
+</style></head>
+<body>
+<header><div class="wrap">
+  <img src="brand/dmc-logo.png" alt="DMC Bilgi Teknolojileri">
+  <div class="kick">SQL SERVER 2025 · GELİŞTİRİCİ KİTABI</div>
+  <h1>Yazılımcılar İçin SQL Server 2025</h1>
+  <p class="sub">Vektör, JSON, RegEx ve AI. Bol örnekli, kaynakçalı ve canlı bir SQL Server 2025 örneğinde doğrulanmış geliştirici rehberi. İki dilli (TR + EN).</p>
+  <div class="rule"></div>
+</div></header>
+
+<div class="wrap">
+  <div class="grid">
+    <div class="card">
+      <h2><span class="flag">🇹🇷</span>Türkçe</h2>
+      <div class="btns">
+        <a class="btn primary" href="tr.html">Tarayıcıda oku</a>
+        <a class="btn" href="https://github.com/dmcteknoloji/sql-server-2025-gelistirici-kitabi/raw/main/pdf/SQL-Server-2025-Gelistirici-Kitabi-TR.pdf">PDF</a>
+        <a class="btn" href="https://github.com/dmcteknoloji/sql-server-2025-gelistirici-kitabi/raw/main/epub/SQL-Server-2025-Gelistirici-Kitabi-TR.epub">EPUB</a>
+        <a class="btn" href="https://github.com/dmcteknoloji/sql-server-2025-gelistirici-kitabi/raw/main/docx/SQL-Server-2025-Gelistirici-Kitabi-TR.docx">DOCX</a>
+      </div>
+    </div>
+    <div class="card">
+      <h2><span class="flag">🇬🇧</span>English</h2>
+      <div class="btns">
+        <a class="btn primary" href="en.html">Read in browser</a>
+        <a class="btn" href="https://github.com/dmcteknoloji/sql-server-2025-gelistirici-kitabi/raw/main/pdf/SQL-Server-2025-Developer-Handbook-EN.pdf">PDF</a>
+        <a class="btn" href="https://github.com/dmcteknoloji/sql-server-2025-gelistirici-kitabi/raw/main/epub/SQL-Server-2025-Developer-Handbook-EN.epub">EPUB</a>
+        <a class="btn" href="https://github.com/dmcteknoloji/sql-server-2025-gelistirici-kitabi/raw/main/docx/SQL-Server-2025-Developer-Handbook-EN.docx">DOCX</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="feat">
+    <h3>İçinde ne var</h3>
+    <ul class="f">
+      <li><b>Vektör & AI</b> · vector tipi, DiskANN, VECTOR_SEARCH, embedding</li>
+      <li><b>Native JSON</b> · json tipi, OPENJSON, JSON_OBJECTAGG</li>
+      <li><b>RegEx & String</b> · REGEXP_*, fuzzy, yeni fonksiyonlar</li>
+      <li><b>Uygulama entegrasyonu</b> · REST, Data API Builder, MCP, CES</li>
+      <li><b>Eşzamanlılık</b> · Optimized Locking, In-Memory OLTP</li>
+      <li><b>Güvenlik</b> · RLS, DDM, Ledger, TLS 1.3</li>
+      <li><b>Canlı RAG mini-projesi</b> · gerçek embedding + VECTOR_DISTANCE + REST</li>
+      <li><b>Çalışan .NET örneği</b> · derlenmiş minimal API</li>
+    </ul>
+  </section>
+
+  <div class="author">
+    <img src="brand/founder.jpg" alt="Çağlar Özenç">
+    <div>
+      <div class="n">Çağlar Özenç</div>
+      <div class="t">Kurucu, DMC Bilgi Teknolojileri · Microsoft Data Platform MVP</div>
+      <div class="t"><a href="https://caglarozenc.com">caglarozenc.com</a> · <a href="https://dmcteknoloji.com">dmcteknoloji.com</a></div>
+    </div>
+  </div>
+</div>
+
+<footer><div class="wrap">
+  Çalıştırılabilir örnekler ve kaynak: <a href="https://github.com/dmcteknoloji/sql-server-2025-gelistirici-kitabi">GitHub deposu</a>.
+  İçerik CC BY 4.0. © DMC Bilgi Teknolojileri. Örnekler SQL Server 2025 (RTM-CU7) üzerinde doğrulanmıştır.
+</div></footer>
+</body></html>

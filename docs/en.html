@@ -1,0 +1,735 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>SQL Server 2025 for Developers</title><style>
+@page { size: A4; margin: 17mm 15mm 16mm; }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family: "Segoe UI","Helvetica Neue",Arial,sans-serif; color:#28323b; font-size:10.6pt; line-height:1.5; margin:0; }
+h1 { font-size:21pt; color:#0A6B73; border-bottom:2.5pt solid #0A6B73; padding-bottom:5px; margin:0 0 12px; page-break-before:always; page-break-after:avoid; letter-spacing:-.01em; }
+h1.first { page-break-before:avoid; }
+h2 { font-size:14pt; color:#08535A; margin:18px 0 5px; page-break-after:avoid; }
+h3 { font-size:11.6pt; color:#1A242E; margin:13px 0 3px; page-break-after:avoid; }
+h4 { font-size:10.8pt; color:#44545f; margin:10px 0 2px; page-break-after:avoid; }
+p { margin:0 0 8px; }
+strong { color:#141d24; }
+a { color:#0A6B73; text-decoration:none; word-break:break-all; }
+code { font-family:"Cascadia Code","Consolas",monospace; font-size:9pt; background:#F1F4F6; color:#08535A; padding:1px 4px; border-radius:3px; }
+pre { background:#0f1922; color:#d6e3ee; border:1px solid #21333f; border-radius:7px; padding:11px 13px; margin:9px 0; overflow:hidden; page-break-inside:avoid; }
+pre code { background:none; color:inherit; padding:0; font-size:8.6pt; line-height:1.55; white-space:pre-wrap; }
+pre.out { background:#eef2f4; color:#33424c; border-color:#d3dbe0; }
+.cap { font-family:"Cascadia Code","Consolas",monospace; font-size:7.6pt; color:#7a8a97; font-weight:600; margin:9px 0 -4px; page-break-after:avoid; }
+.cap.o { color:#9a6b15; }
+table { border-collapse:collapse; width:100%; margin:11px 0; font-size:9.2pt; page-break-inside:avoid; }
+th { background:#0A6B73; color:#fff; text-align:left; padding:6px 9px; font-size:8.6pt; }
+td { border:1px solid #dbe2e7; padding:5px 9px; vertical-align:top; }
+tr:nth-child(even) td { background:#f4f7f8; }
+blockquote { background:#E9F3F3; border:1px solid #9FD4D8; border-left:3px solid #0A6B73; border-radius:6px; margin:10px 0; padding:9px 13px; page-break-inside:avoid; }
+blockquote p:last-child { margin-bottom:0; }
+ul,ol { margin:6px 0 9px; padding-left:22px; }
+li { margin:3px 0; }
+hr { border:0; border-top:1px solid #c8d2d8; margin:16px 0; }
+.cover { page-break-after:always; padding-top:70mm; }
+.cover .kick { font-family:"Cascadia Code","Consolas",monospace; font-size:12pt; color:#0A6B73; font-weight:700; letter-spacing:2px; }
+.cover .t { font-size:30pt; font-weight:800; color:#141d24; margin:8px 0 0; line-height:1.1; }
+.cover .s { font-size:13pt; color:#44545f; margin:12px 0 0; }
+.cover .rule { border-top:4px solid #0A6B73; margin:16px 0 0; }
+.cover .m { font-family:"Cascadia Code","Consolas",monospace; font-size:9.5pt; color:#6e7c88; margin-top:10px; }
+.tk-k { color:#7fd8e0; } .tk-s { color:#e4b36a; } .tk-c { color:#7d95a5; font-style:italic; }
+.tk-f { color:#9ec7ff; } .tk-n { color:#cbb0e8; }
+figure.img { margin:12px 0; text-align:center; page-break-inside:avoid; }
+figure.img img { max-width:96%; height:auto; }
+figure.img figcaption { font-size:8.6pt; color:#6e7c88; font-style:italic; margin-top:4px; }
+</style></head><body><div class="cover"><img src="brand/dmc-logo.png" alt="DMC" style="height:64px;margin-bottom:26px"><div class="kick">SQL SERVER 2025</div><div class="t">SQL Server 2025 for Developers</div><div class="s">Vector, JSON, RegEx and AI · an illustrated, hands-on developer guide</div><div class="rule"></div><div class="m">Çağlar Özenç · caglarozenc.com · DMC Bilgi Teknolojileri · 2026</div></div><h1 class="first">Preface</h1>
+<p>When SQL Server 2025 shipped, what I most wanted to know was what actually changes in a developer's day behind the marketing headlines. Having lived with SQL Server for years, I know that "a new version is out" usually means "a few new flags, a few gotchas, and a lot of fine detail."</p>
+<p>I wrote this book to live through that fine detail once, myself, and write it down. I ran nearly every example on a live SQL Server 2025 instance and marked, one by one, the places where the docs and the build diverge, or where a feature behaves differently on the box product versus the cloud. My goal is that you don't fall into the same traps after me.</p>
+<p>This is not a DBA handbook; it is written from the perspective of <strong>an engineer who builds applications</strong>. You can read it front to back or jump to the chapter you need; each one stands on its own. Every example is runnable in the repository and is automatically re-verified on a real SQL Server 2025 on every push.</p>
+<p>Enjoy the read.</p>
+<p>Çağlar Özenç</p>
+<h1>Part I · Foundations</h1>
+<p><em>Set up the environment in 60 seconds, turn on the preview flags, and see how to read this book.</em></p>
+<h1>1. Introduction: who this book is for</h1>
+<p>This ebook is written for <strong>software developers, software specialists and SQL developers</strong>. The goal is to explain SQL Server 2025 not from a DBA's angle but from the perspective of <strong>an engineer who builds applications</strong>: the new T-SQL capabilities, the features that turn the database into an AI application platform, and how to use them from .NET / EF Core / Python code.</p>
+<p><strong>Nearly every example in this book was executed on a real SQL Server 2025 instance and is shown with its output.</strong> The version used:</p>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>Microsoft SQL Server 2025 (RTM-CU7) - 17.0.4065.4 (X64)
+Enterprise Developer Edition (64-bit) on Linux (Ubuntu 24.04)</code></pre>
+<blockquote><p><strong>Why real output?</strong> The syntax of preview features can diverge between the docs and a given build. By validating every example on a live engine, this book eliminates the "the docs said so but it didn't work" trap. Wherever the box product diverges from Azure SQL / Fabric, the difference is called out explicitly.</p></blockquote>
+<h2>1.1 What changed: the 30-second summary</h2>
+<p>SQL Server 2025 (version <strong>17.x</strong>) is the broadest engine release since 2016. From a developer's point of view, the highlights are:</p>
+<ul><li><strong>Built-in vector type and vector search</strong>: for RAG / semantic search, with no separate vector database.</li><li><strong>A real `json` data type</strong>: the era of storing JSON inside <code>nvarchar(max)</code> is over.</li><li><strong>RegEx inside the language</strong>: pattern matching, extraction and validation without CLR.</li><li><strong>Application integration</strong>: REST calls from T-SQL, automatic REST/GraphQL (Data API Builder), an MCP server for AI agents, change streaming to Event Hubs (CES).</li><li><strong>Concurrency</strong>: Optimized Locking radically reduces blocking and lock memory.</li><li><strong>Free developer editions</strong>: Standard Developer and Enterprise Developer.</li></ul>
+<figure class="img"><img src="assets/fig-platform.png" alt=""><figcaption>Figure 1: The database is now an AI application platform</figcaption></figure>
+<h2>1.2 Set up the environment in 60 seconds with Docker</h2>
+<p>The command I used to set up my lab; the same one works for you:</p>
+<div class="cap">» bash</div>
+<pre><code>docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Strong#Passw0rd" \
+  -e "MSSQL_PID=Developer" -p 1433:1433 --name sqldev2025 -d \
+  mcr.microsoft.com/mssql/server:2025-latest</code></pre>
+<p>To connect, use <code>sqlcmd</code> (18+), <strong>SSMS 21</strong>, the <strong>VS Code mssql extension</strong> or Azure Data Studio. A quick test from inside the container:</p>
+<div class="cap">» bash</div>
+<pre><code>docker exec -it sqldev2025 /opt/mssql-tools18/bin/sqlcmd \
+  -S localhost -U sa -P 'Strong#Passw0rd' -C -No -Q "SELECT @@VERSION"</code></pre>
+<blockquote><p><strong>Note:</strong> <code>-C -No</code> = trust the server certificate + do not force encryption. In production use a valid certificate; SQL Server 2025 supports <strong>TLS 1.3 + TDS 8.0</strong> on the wire.</p></blockquote>
+<h2>1.3 Enable preview features and the compatibility level</h2>
+<p>Some features (vector index, CES, fuzzy matching, etc.) require a <strong>database-scoped preview flag</strong>. In addition, some new functions need <strong>compatibility level 170</strong> (such as <code>AI_GENERATE_CHUNKS</code>).</p>
+<div class="cap">» sql</div>
+<pre><code><span class="tk-k">CREATE</span> <span class="tk-k">DATABASE</span> DevBook;
+<span class="tk-k">ALTER</span> <span class="tk-k">DATABASE</span> DevBook <span class="tk-k">SET</span> COMPATIBILITY_LEVEL = <span class="tk-n">170</span>;
+GO
+<span class="tk-c">-- Enable preview features (persisted on the database)</span>
+<span class="tk-k">ALTER</span> <span class="tk-k">DATABASE</span> <span class="tk-k">SCOPED</span> <span class="tk-k">CONFIGURATION</span> <span class="tk-k">SET</span> PREVIEW_FEATURES = <span class="tk-k">ON</span>;</code></pre>
+<p>Check:</p>
+<div class="cap">» sql</div>
+<pre><code><span class="tk-k">SELECT</span> name, value <span class="tk-k">FROM</span> sys.database_scoped_configurations <span class="tk-k">WHERE</span> name = <span class="tk-s">'PREVIEW_FEATURES'</span>;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>name              value
+----------------  -----
+PREVIEW_FEATURES  1</code></pre>
+<hr>
+<h1>Part II · AI and New Data Types</h1>
+<p><em>Vector search, native JSON and RegEx inside the language. In this part the data itself changes: the database now stores embeddings, holds documents and matches patterns.</em></p>
+<h1>2. AI and Vector Search</h1>
+<p>This is the headline of the release. SQL Server 2025 <strong>stores, indexes and searches embeddings</strong>; it can even <strong>generate embeddings</strong> from within T-SQL. You can build a RAG (retrieval-augmented generation) pipeline inside the database itself.</p>
+<h2>2.1 The <code>vector</code> data type and vector functions</h2>
+<p><code>vector(n)</code> stores a fixed-length numeric array; it is kept in an optimized binary format but exposed like a JSON array. Each element uses single (4-byte, float32) precision.</p>
+<div class="cap">» 02-vector-funcs.sql</div>
+<pre><code><span class="tk-k">DECLARE</span> @a <span class="tk-k">vector</span>(<span class="tk-n">3</span>) = <span class="tk-s">'[1,2,3]'</span>, @b <span class="tk-k">vector</span>(<span class="tk-n">3</span>) = <span class="tk-s">'[2,3,4]'</span>;
+<span class="tk-k">SELECT</span> <span class="tk-f">VECTOR_DISTANCE</span>(<span class="tk-s">'cosine'</span>, @a, @b)     <span class="tk-k">AS</span> cosine_dist,
+       <span class="tk-f">VECTOR_DISTANCE</span>(<span class="tk-s">'euclidean'</span>, @a, @b)  <span class="tk-k">AS</span> euclid_dist,
+       <span class="tk-f">VECTOR_NORM</span>(@a, <span class="tk-s">'norm2'</span>)              <span class="tk-k">AS</span> l2norm,
+       <span class="tk-f">CAST</span>(<span class="tk-f">VECTOR_NORMALIZE</span>(@a, <span class="tk-s">'norm2'</span>) <span class="tk-k">AS</span> <span class="tk-k">varchar</span>(<span class="tk-n">64</span>)) <span class="tk-k">AS</span> normalized;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>cosine_dist            euclid_dist          l2norm              normalized
+---------------------  -------------------  ------------------  -------------------------------------------------
+7.4167251586914062E-3  1.7320507764816284   3.7416573867739413  [2.6726124e-001,5.3452247e-001,8.0178368e-001]</code></pre>
+<p><code>VECTOR_DISTANCE</code> supports three metrics: <code>'cosine'</code>, <code>'euclidean'</code>, <code>'dot'</code>. You read a vector's properties with <code>VECTORPROPERTY</code>:</p>
+<div class="cap">» sql</div>
+<pre><code><span class="tk-k">DECLARE</span> @a <span class="tk-k">vector</span>(<span class="tk-n">3</span>) = <span class="tk-s">'[1,2,3]'</span>;
+<span class="tk-k">SELECT</span> <span class="tk-f">VECTORPROPERTY</span>(@a,<span class="tk-s">'Dimensions'</span>) <span class="tk-k">AS</span> dims, <span class="tk-f">VECTORPROPERTY</span>(@a,<span class="tk-s">'BaseType'</span>) <span class="tk-k">AS</span> basetype;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>dims  basetype
+----  --------
+3     float32</code></pre>
+<h2>2.2 Exact (kNN) search: the safe path that works everywhere</h2>
+<p>Finding nearest neighbors needs no index: <code>VECTOR_DISTANCE</code> + <code>ORDER BY</code> performs an <strong>exact (kNN)</strong> search. It works on small-medium sets and on every edition (box + Azure + Fabric).</p>
+<div class="cap">» 03-exact-knn.sql</div>
+<pre><code><span class="tk-k">DECLARE</span> @qv <span class="tk-k">vector</span>(<span class="tk-n">5</span>) = <span class="tk-s">'[0.3,0.3,0.3,0.3,0.3]'</span>;
+<span class="tk-k">SELECT</span> <span class="tk-k">TOP</span> (<span class="tk-n">3</span>) id, title, <span class="tk-f">VECTOR_DISTANCE</span>(<span class="tk-s">'cosine'</span>, embedding, @qv) <span class="tk-k">AS</span> dist
+<span class="tk-k">FROM</span> dbo.Articles
+<span class="tk-k">ORDER</span> <span class="tk-k">BY</span> dist;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>id  title       dist
+--  ----------  -------------------
+15  Article 15  0.09546583890914917
+30  Article 30  0.09546583890914917
+49  Article 49  0.09546583890914917</code></pre>
+<p><strong>Field example: similar support tickets.</strong> When a new support ticket arrives, finding similar tickets resolved in the past shortens resolution time. You keep each ticket's embedding in a <code>vector</code> column, embed the incoming ticket with the same model, and pull the nearest neighbors:</p>
+<div class="cap">» field-tickets.sql</div>
+<pre><code><span class="tk-k">CREATE</span> <span class="tk-k">TABLE</span> dbo.Tickets (id <span class="tk-k">int</span> <span class="tk-k">PRIMARY</span> <span class="tk-k">KEY</span>, subject <span class="tk-k">nvarchar</span>(<span class="tk-n">60</span>), v <span class="tk-k">vector</span>(<span class="tk-n">3</span>));
+<span class="tk-k">INSERT</span> dbo.Tickets <span class="tk-k">VALUES</span>
+ (<span class="tk-n">1</span>,<span class="tk-s">'Query runs very slowly'</span>,<span class="tk-s">'[0.90,0.10,0.05]'</span>),
+ (<span class="tk-n">2</span>,<span class="tk-s">'App cannot connect to the database'</span>,<span class="tk-s">'[0.10,0.90,0.10]'</span>),
+ (<span class="tk-n">3</span>,<span class="tk-s">'Report screen opens late'</span>,<span class="tk-s">'[0.82,0.18,0.08]'</span>),
+ (<span class="tk-n">4</span>,<span class="tk-s">'Nightly backup failed'</span>,<span class="tk-s">'[0.08,0.12,0.90]'</span>);
+
+<span class="tk-c">-- New ticket is performance-themed; the 2 most similar past tickets</span>
+<span class="tk-k">DECLARE</span> @new <span class="tk-k">vector</span>(<span class="tk-n">3</span>) = <span class="tk-s">'[0.88,0.12,0.06]'</span>;
+<span class="tk-k">SELECT</span> <span class="tk-k">TOP</span> <span class="tk-n">2</span> id, subject, <span class="tk-f">ROUND</span>(<span class="tk-f">VECTOR_DISTANCE</span>(<span class="tk-s">'cosine'</span>, v, @new), <span class="tk-n">4</span>) <span class="tk-k">AS</span> distance
+<span class="tk-k">FROM</span> dbo.Tickets <span class="tk-k">ORDER</span> <span class="tk-k">BY</span> distance;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>id  subject                   distance
+--  ------------------------  --------
+1   Query runs very slowly    0.0004
+3   Report screen opens late  0.0036</code></pre>
+<p>The performance-themed ticket returned the two performance tickets, not the connection or backup ones. In reality you use <code>vector(384)</code>/<code>vector(1536)</code> from an embedding model instead of <code>vector(3)</code> (see Chapter 11.4).</p>
+<h2>2.3 Approximate (ANN) search: the DiskANN vector index</h2>
+<p>On millions of rows an exact scan is expensive. A <strong>DiskANN</strong>-based vector index makes it scalable with approximate nearest neighbor (ANN) search.</p>
+<figure class="img"><img src="assets/fig-ann.png" alt=""><figcaption>Figure 2: Exact (kNN) compares against every row; DiskANN (ANN) hops across a graph with far fewer comparisons</figcaption></figure>
+<p>While trying it I hit four practical traps, in order:</p>
+<p><strong>Trap 1, the preview flag.</strong> The vector index + <code>VECTOR_SEARCH</code> is in preview on the box product: <code>PREVIEW_FEATURES = ON</code> is required (not needed on Azure SQL DB / Fabric SQL).</p>
+<p><strong>Trap 2, `SET QUOTED_IDENTIFIER ON`.</strong> If this option is off, index creation fails with <strong>Msg 1934</strong> (it is off by default in sqlcmd; on in SSMS):</p>
+<div class="cap o">↳ real error: with QUOTED_IDENTIFIER off</div>
+<pre class="out"><code>Msg 1934, Level 16: CREATE VECTOR INDEX failed because the following SET
+options have incorrect settings: 'QUOTED_IDENTIFIER'.</code></pre>
+<p>The correct setup:</p>
+<div class="cap">» 04-vector-index.sql</div>
+<pre><code><span class="tk-k">SET</span> QUOTED_IDENTIFIER <span class="tk-k">ON</span>;
+
+<span class="tk-c">-- At least 100 rows are required; the embeddings are generated for the example</span>
+<span class="tk-k">CREATE</span> <span class="tk-k">TABLE</span> dbo.Articles (id <span class="tk-k">int</span> <span class="tk-k">PRIMARY</span> <span class="tk-k">KEY</span>, title <span class="tk-k">nvarchar</span>(<span class="tk-n">100</span>), embedding <span class="tk-k">vector</span>(<span class="tk-n">5</span>));
+<span class="tk-k">INSERT</span> dbo.Articles (id, title, embedding)
+<span class="tk-k">SELECT</span> value, <span class="tk-s">'Article '</span> || value,
+       <span class="tk-f">CAST</span>(<span class="tk-f">JSON_ARRAY</span>(value*<span class="tk-n">0.01</span>, value*<span class="tk-n">0.02</span>, value*<span class="tk-n">0.03</span>, value*<span class="tk-n">0.04</span>, value*<span class="tk-n">0.05</span>) <span class="tk-k">AS</span> <span class="tk-k">vector</span>(<span class="tk-n">5</span>))
+<span class="tk-k">FROM</span> <span class="tk-f">GENERATE_SERIES</span>(<span class="tk-n">1</span>, <span class="tk-n">100</span>);
+
+<span class="tk-k">CREATE</span> <span class="tk-k">VECTOR</span> <span class="tk-k">INDEX</span> vec_idx <span class="tk-k">ON</span> dbo.Articles(embedding)
+<span class="tk-k">WITH</span> (METRIC = <span class="tk-s">'cosine'</span>, TYPE = <span class="tk-s">'diskann'</span>);
+
+<span class="tk-k">SELECT</span> name, type_desc <span class="tk-k">FROM</span> sys.vector_indexes;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>name     type_desc
+-------  ---------
+vec_idx  VECTOR</code></pre>
+<p><strong>Trap 3, the syntax is `TOP_N` on the box, `WITH APPROXIMATE` on Azure/Fabric.</strong> This was the most important thing I found. The newer <code>SELECT TOP (N) WITH APPROXIMATE</code> syntax is for <strong>"latest version indexes"</strong> and currently exists <strong>only on Azure SQL Database and Fabric SQL</strong>. On the SQL Server 2025 box product (CU7), trying it gives:</p>
+<div class="cap o">↳ real error: WITH APPROXIMATE on the box product</div>
+<pre class="out"><code>Msg 102, Level 15: Incorrect syntax near 'APPROXIMATE'.</code></pre>
+<p>On the box product you call <strong>the `VECTOR_SEARCH` function with the `TOP_N` parameter</strong>.</p>
+<p><strong>Trap 4, the alias rule.</strong> You reference table columns with the <strong>table alias</strong> (<code>t</code>) and the produced <code>distance</code> column with the <strong>result alias</strong> (<code>s</code>); mixing them yields "Invalid column name".</p>
+<div class="cap">» 05-vector-search-box.sql</div>
+<pre><code><span class="tk-k">SET</span> QUOTED_IDENTIFIER <span class="tk-k">ON</span>;
+<span class="tk-k">DECLARE</span> @qv <span class="tk-k">vector</span>(<span class="tk-n">5</span>) = <span class="tk-s">'[0.3,0.3,0.3,0.3,0.3]'</span>;
+
+<span class="tk-k">SELECT</span> t.id, t.title, s.distance
+<span class="tk-k">FROM</span> <span class="tk-f">VECTOR_SEARCH</span>(
+        <span class="tk-k">TABLE</span>      = dbo.Articles <span class="tk-k">AS</span> t,   <span class="tk-c">-- table alias: t</span>
+        COLUMN     = embedding,
+        SIMILAR_TO = @qv,
+        METRIC     = <span class="tk-s">'cosine'</span>,
+        TOP_N      = <span class="tk-n">3</span>) <span class="tk-k">AS</span> s              <span class="tk-c">-- result alias: s</span>
+<span class="tk-k">ORDER</span> <span class="tk-k">BY</span> s.distance;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>id  title      distance
+--  ---------  ---------------------
+1   Article 1  9.5465958118438721E-2
+2   Article 2  9.5465958118438721E-2
+3   Article 3  9.5465958118438721E-2</code></pre>
+<blockquote><p><strong>On Azure SQL DB / Fabric SQL</strong> the same query with a "latest version" index is written with <code>TOP (N) WITH APPROXIMATE</code> instead of <code>TOP_N</code>, and <code>ORDER BY</code> must be <code>distance</code> ASC only: <code>SELECT TOP (3) WITH APPROXIMATE t.id, s.distance FROM VECTOR_SEARCH(TABLE = ... AS t, COLUMN = ..., SIMILAR_TO = @qv, METRIC = 'cosine') AS s ORDER BY s.distance;</code>. Latest-version indexes also bring <strong>full DML</strong> (INSERT/UPDATE/DELETE) and <strong>iterative filtering</strong> (WHERE applied during the search); earlier indexes made the table read-only and applied filters after the search.</p></blockquote>
+<figure class="img"><img src="assets/fig-boxcloud.png" alt=""><figcaption>Figure 3: The same `VECTOR_SEARCH`: `TOP_N` on the box, `TOP (N) WITH APPROXIMATE` on Azure SQL/Fabric</figcaption></figure>
+<h2>2.4 Generate embeddings inside the database</h2>
+<p><code>CREATE EXTERNAL MODEL</code> defines an AI inference endpoint (Azure OpenAI, OpenAI, Ollama, ONNX Runtime) as a database object; <code>AI_GENERATE_EMBEDDINGS</code> generates embeddings with that model. With Managed Identity you authenticate <strong>without storing any key</strong>.</p>
+<div class="cap">» 06-external-model.sql</div>
+<pre><code><span class="tk-c">-- Prerequisite: enable outbound REST calls (on by default on Azure SQL DB / Fabric)</span>
+<span class="tk-k">EXEC</span> sp_configure <span class="tk-s">'external rest endpoint enabled'</span>, <span class="tk-n">1</span>; <span class="tk-k">RECONFIGURE</span> <span class="tk-k">WITH</span> <span class="tk-k">OVERRIDE</span>;
+
+<span class="tk-c">-- Managed-Identity-based credential (the secret field is required)</span>
+<span class="tk-k">CREATE</span> <span class="tk-k">DATABASE</span> <span class="tk-k">SCOPED</span> <span class="tk-k">CREDENTIAL</span> [https://my-aoai.cognitiveservices.azure.com/]
+    <span class="tk-k">WITH</span> <span class="tk-k">IDENTITY</span> = <span class="tk-s">'Managed Identity'</span>,
+         secret   = <span class="tk-s">'{"resourceid":"https://cognitiveservices.azure.com"}'</span>;
+
+<span class="tk-k">CREATE</span> <span class="tk-k">EXTERNAL</span> <span class="tk-k">MODEL</span> AzureEmbed <span class="tk-k">WITH</span> (
+    LOCATION   = <span class="tk-s">'https://my-aoai.cognitiveservices.azure.com/openai/deployments/text-embedding-3-small/embeddings?api-version=2024-02-01'</span>,
+    API_FORMAT = <span class="tk-s">'Azure OpenAI'</span>,
+    MODEL_TYPE = EMBEDDINGS,
+    <span class="tk-k">MODEL</span>      = <span class="tk-s">'text-embedding-3-small'</span>,
+    <span class="tk-k">CREDENTIAL</span> = [https://my-aoai.cognitiveservices.azure.com/]);</code></pre>
+<blockquote><p><strong>Note:</strong> The credential name must exactly match the <code>LOCATION</code> protocol + host. The only valid <code>MODEL_TYPE</code> today is <code>EMBEDDINGS</code>. Accepted <code>API_FORMAT</code> values: <code>Azure OpenAI</code>, <code>OpenAI</code>, <code>Ollama</code>, <code>ONNX Runtime</code> (with ONNX you can run locally, offline).</p></blockquote>
+<blockquote><p><strong>HTTPS is required (verified live):</strong> The engine only allows <strong>HTTPS/TLS</strong> endpoints. When I pointed it at an HTTP Ollama endpoint, it was rejected outright:</p></blockquote>
+<p>&gt;</p>
+<blockquote><p><code>Msg 31610 … Accessing the external endpoint is only allowed via HTTPS.</code></p></blockquote>
+<p>&gt;</p>
+<blockquote><p>If you use a local model (Ollama/ONNX), put the endpoint behind <strong>TLS with a valid/trusted certificate</strong>; in practice most teams point <code>LOCATION</code> directly at <strong>Azure OpenAI</strong>.</p></blockquote>
+<h3>Live verification: generating embeddings inside the engine</h3>
+<p>I ran <code>AI_GENERATE_EMBEDDINGS</code> <strong>in two end-to-end scenarios myself.</strong> In both, the engine generated the embedding itself and wrote it into a <code>vector</code> column, then embedded the question with the same model and searched with <code>VECTOR_DISTANCE</code>.</p>
+<p><strong>A) Azure OpenAI (the production path).</strong> <code>text-embedding-3-small</code> (1536 dims), authenticated with <code>HTTPEndpointHeaders</code> (api-key):</p>
+<div class="cap">» 29-aoai-embed.sql</div>
+<pre><code><span class="tk-k">CREATE</span> <span class="tk-k">TABLE</span> dbo.Kb (id <span class="tk-k">int</span> <span class="tk-k">IDENTITY</span> <span class="tk-k">PRIMARY</span> <span class="tk-k">KEY</span>, chunk <span class="tk-k">nvarchar</span>(<span class="tk-n">200</span>), emb <span class="tk-k">vector</span>(<span class="tk-n">1536</span>));
+<span class="tk-k">INSERT</span> dbo.Kb (chunk, emb)
+<span class="tk-k">SELECT</span> c.chunk, <span class="tk-f">AI_GENERATE_EMBEDDINGS</span>(c.chunk <span class="tk-k">USE</span> <span class="tk-k">MODEL</span> AzureEmbed)
+<span class="tk-k">FROM</span> (<span class="tk-k">VALUES</span> (N<span class="tk-s">'SQL Server 2025 offers a built-in vector type and DiskANN index for semantic search.'</span>),
+             (N<span class="tk-s">'The native JSON type stores documents in a binary format.'</span>),
+             (N<span class="tk-s">'Regular expressions provide pattern matching without CLR.'</span>)) c(chunk);
+
+<span class="tk-k">DECLARE</span> @q <span class="tk-k">vector</span>(<span class="tk-n">1536</span>) = <span class="tk-f">AI_GENERATE_EMBEDDINGS</span>(N<span class="tk-s">'how do I search text by meaning?'</span> <span class="tk-k">USE</span> <span class="tk-k">MODEL</span> AzureEmbed);
+<span class="tk-k">SELECT</span> <span class="tk-k">TOP</span> <span class="tk-n">2</span> id, <span class="tk-k">LEFT</span>(chunk,<span class="tk-n">52</span>) <span class="tk-k">AS</span> chunk, <span class="tk-f">ROUND</span>(<span class="tk-f">VECTOR_DISTANCE</span>(<span class="tk-s">'cosine'</span>, emb, @q), <span class="tk-n">4</span>) <span class="tk-k">AS</span> dist
+<span class="tk-k">FROM</span> dbo.Kb <span class="tk-k">ORDER</span> <span class="tk-k">BY</span> dist;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>id  chunk                                                 dist
+--  ----------------------------------------------------  ------
+1   SQL Server 2025 offers a built-in vector type and Di  0.7059
+3   Regular expressions provide pattern matching without  0.8240</code></pre>
+<p><strong>B) A local model (Ollama), from inside the engine.</strong> If you want to keep the model on your machine, one detail matters: SQL Server only allows a <strong>trusted</strong> HTTPS endpoint and <strong>does not accept a self-signed certificate.</strong> I tested this in detail: even when the container's OS trusts the cert (OpenSSL verification OK), the engine's REST client does not, and it returns <code>0x80070008</code> without ever sending the request. The fix: run Ollama on your machine and put a <strong>trusted-certificate tunnel</strong> (for example the free <code>cloudflared</code>) in front of it. The model stays entirely local; SQL only sees the tunnel's trusted certificate:</p>
+<div class="cap">» 30-local-ollama-embed.sql</div>
+<pre><code><span class="tk-c">-- In a terminal: ollama serve   +   cloudflared tunnel --url http://localhost:11434</span>
+<span class="tk-k">CREATE</span> <span class="tk-k">EXTERNAL</span> <span class="tk-k">MODEL</span> LocalOllama <span class="tk-k">WITH</span> (
+  LOCATION = <span class="tk-s">'https://&lt;tunnel-name&gt;.trycloudflare.com/api/embed'</span>,
+  API_FORMAT = <span class="tk-s">'Ollama'</span>, MODEL_TYPE = EMBEDDINGS, <span class="tk-k">MODEL</span> = <span class="tk-s">'all-minilm'</span>);
+
+<span class="tk-k">DECLARE</span> @q <span class="tk-k">vector</span>(<span class="tk-n">384</span>) = <span class="tk-f">AI_GENERATE_EMBEDDINGS</span>(N<span class="tk-s">'how do I find similar text by meaning?'</span> <span class="tk-k">USE</span> <span class="tk-k">MODEL</span> LocalOllama);
+<span class="tk-k">SELECT</span> <span class="tk-k">TOP</span> <span class="tk-n">2</span> id, <span class="tk-k">LEFT</span>(chunk,<span class="tk-n">46</span>) <span class="tk-k">AS</span> chunk, <span class="tk-f">ROUND</span>(<span class="tk-f">VECTOR_DISTANCE</span>(<span class="tk-s">'cosine'</span>, emb, @q), <span class="tk-n">4</span>) <span class="tk-k">AS</span> dist
+<span class="tk-k">FROM</span> dbo.KbLocal <span class="tk-k">ORDER</span> <span class="tk-k">BY</span> dist;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>id  chunk                                            dist
+--  -----------------------------------------------  ------
+1   SQL Server 2025 has a built-in vector type and   0.6912
+3   Regular expressions match patterns without CLR   0.7352</code></pre>
+<p>In both scenarios the engine generated the embedding itself and the semantic search ran on the local SQL Server 2025. The only extra component the local path needs is a trusted-certificate tunnel, because SQL does not accept a self-signed one. (The demo in Chapter 11.4, by contrast, generates embeddings on the client side and loads them, so it needs no tunnel at all.)</p>
+<h2>2.5 Chunk text: <code>AI_GENERATE_CHUNKS</code></h2>
+<p>For RAG you must split long text into model-sized chunks. <code>AI_GENERATE_CHUNKS</code> does this and is a <strong>table-valued function</strong>, used with <code>CROSS APPLY</code>, returning <code>chunk</code>, <code>chunk_order</code>, <code>chunk_offset</code>, <code>chunk_length</code> columns. It <strong>requires no external endpoint</strong>, so the output below is real:</p>
+<div class="cap">» 07-chunks.sql</div>
+<pre><code><span class="tk-k">SELECT</span> c.chunk, c.chunk_order, c.chunk_length
+<span class="tk-k">FROM</span> (<span class="tk-k">VALUES</span> (N<span class="tk-s">'SQL Server 2025 brings built-in vector and JSON for developers.'</span>)) d(t)
+<span class="tk-k">CROSS</span> <span class="tk-k">APPLY</span> <span class="tk-f">AI_GENERATE_CHUNKS</span>(SOURCE = d.t, CHUNK_TYPE = FIXED, CHUNK_SIZE = <span class="tk-n">25</span>, OVERLAP = <span class="tk-n">0</span>) <span class="tk-k">AS</span> c;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>chunk                       chunk_order  chunk_length
+--------------------------  -----------  ------------
+SQL Server 2025 brings bu   1            25
+ilt-in vector and JSON fo   2            25
+r developers.               3            13</code></pre>
+<p>With <code>OVERLAP</code> (a percentage 0-50) you overlap consecutive chunks to improve retrieval accuracy. The full RAG flow: <code>AI_GENERATE_CHUNKS</code> → <code>AI_GENERATE_EMBEDDINGS</code> → <code>INSERT</code> into a <code>vector(1536)</code> column → <code>VECTOR_DISTANCE</code>/<code>VECTOR_SEARCH</code> against the query vector.</p>
+<figure class="img"><img src="assets/fig-rag.png" alt=""><figcaption>Figure 4: The end-to-end RAG pipeline, entirely inside the database</figcaption></figure>
+<h2>2.6 Application side: .NET and EF Core</h2>
+<p>Native vectors travel over TDS with <strong>`Microsoft.Data.SqlClient` 6.1.0+</strong>; the <code>SqlVector&lt;float&gt;</code> type was added. <strong>.NET 10</strong> adds the <code>SqlDbType.Vector</code> enumeration. For older clients, SQL Server exposes vectors as <code>varchar(max)</code> to preserve backward compatibility.</p>
+<p><strong>EF Core 10</strong> fully supports vectors and <code>VECTOR_DISTANCE</code> (only on SQL Server 2025+):</p>
+<div class="cap">» 08-efcore.cs</div>
+<pre><code>public class Article
+{
+    public int Id { get; set; }
+    public string Title { get; set; } = "";
+    [Column(TypeName = "vector(1536)")]
+    public SqlVector&lt;float&gt; Embedding { get; set; }
+}</code></pre>
+<p>You run semantic search over LINQ with <code>EF.Functions.VectorDistance(...)</code>; the full connection string, query and Python examples are in <strong>Chapter 8</strong>.</p>
+<blockquote><p><strong>Note:</strong> Starting with EF Core 11, vector properties are <strong>not loaded by default</strong> in a query because they are large, you select them explicitly when needed. With Dapper too, <code>SqlVector&lt;float&gt;</code> binds directly as a parameter.</p></blockquote>
+<h2>2.7 Exact or ANN?: a live measurement</h2>
+<p>Decisions need real numbers. I ran the same query 5 times each, exact (no index) and DiskANN ANN (<code>VECTOR_SEARCH</code>), over a <strong>100,000-row, 16-dimension</strong> table (warm cache):</p>
+<figure class="img"><img src="assets/fig-perf.png" alt=""><figcaption>Figure 5: Exact kNN ~13 ms, DiskANN ANN ~5 ms (100,000 rows, 16 dims; my own measurement)</figcaption></figure>
+<ul><li><strong>Exact (kNN):</strong> ~11-14 ms (median ~13 ms). Every query compares against all rows: O(n).</li><li><strong>ANN (DiskANN):</strong> ~4-5 ms (some warm calls &lt;1 ms). It hops across a graph.</li></ul>
+<p>At this scale ANN is <strong>~3× faster</strong>; the real payoff grows <strong>with row count and dimensionality</strong> (with millions of rows at 768/1536 dims the gap becomes far larger). <strong>Rule of thumb:</strong> up to a few hundred thousand rows and modest latency needs, exact is enough and simpler; beyond that, move to a DiskANN index. ANN is <em>approximate</em>, if you need 100% precision, use exact.</p>
+<blockquote><p><strong>Box-product note:</strong> This ANN measurement used the box-product <code>VECTOR_SEARCH ... TOP_N</code> syntax; it needs <code>PREVIEW_FEATURES = ON</code> and <code>SET QUOTED_IDENTIFIER ON</code> (see Chapter 10, Troubleshooting).</p></blockquote>
+<hr>
+<h1>3. Native JSON</h1>
+<p>There is now a real <code>json</code> data type: stored in binary, indexable, up to 2 GB per document. Read performance improves markedly over storing JSON inside <code>nvarchar(max)</code>, and the schema is validated by the engine.</p>
+<h2>3.1 Create and query a <code>json</code> column</h2>
+<div class="cap">» 09-json-table.sql</div>
+<pre><code><span class="tk-k">CREATE</span> <span class="tk-k">TABLE</span> dbo.Orders (Id <span class="tk-k">int</span> <span class="tk-k">IDENTITY</span> <span class="tk-k">PRIMARY</span> <span class="tk-k">KEY</span>, Doc <span class="tk-k">json</span>);
+<span class="tk-k">INSERT</span> dbo.Orders (Doc) <span class="tk-k">VALUES</span>
+ (N<span class="tk-s">'{"customer":"Ada","total":1290.50,"items":["ssd","ram"],"paid":true}'</span>),
+ (N<span class="tk-s">'{"customer":"Linus","total":540.00,"items":["kbd"],"paid":false}'</span>);
+
+<span class="tk-k">SELECT</span> Id,
+       <span class="tk-f">JSON_VALUE</span>(Doc, <span class="tk-s">'$.customer'</span>)                       <span class="tk-k">AS</span> customer,
+       <span class="tk-f">CAST</span>(<span class="tk-f">JSON_VALUE</span>(Doc, <span class="tk-s">'$.total'</span>) <span class="tk-k">AS</span> <span class="tk-k">decimal</span>(<span class="tk-n">10</span>,<span class="tk-n">2</span>))   <span class="tk-k">AS</span> total,
+       <span class="tk-f">JSON_QUERY</span>(Doc, <span class="tk-s">'$.items'</span>)                          <span class="tk-k">AS</span> items,
+       <span class="tk-f">ISJSON</span>(Doc)                                         <span class="tk-k">AS</span> is_valid
+<span class="tk-k">FROM</span> dbo.Orders;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>Id  customer  total    items           is_valid
+--  --------  -------  --------------  --------
+1   Ada       1290.50  ["ssd","ram"]   1
+2   Linus     540.00   ["kbd"]         1</code></pre>
+<p><code>JSON_VALUE</code> returns a scalar value, <code>JSON_QUERY</code> an object/array. <code>ISJSON</code> tests whether a text is valid JSON.</p>
+<h2>3.2 Update a document: <code>JSON_MODIFY</code></h2>
+<div class="cap">» 10-json-modify.sql</div>
+<pre><code><span class="tk-k">UPDATE</span> dbo.Orders <span class="tk-k">SET</span> Doc = <span class="tk-f">JSON_MODIFY</span>(Doc, <span class="tk-s">'$.paid'</span>, <span class="tk-s">'true'</span>) <span class="tk-k">WHERE</span> Id = <span class="tk-n">2</span>;
+<span class="tk-k">SELECT</span> Id, <span class="tk-f">JSON_VALUE</span>(Doc, <span class="tk-s">'$.paid'</span>) <span class="tk-k">AS</span> paid <span class="tk-k">FROM</span> dbo.Orders <span class="tk-k">WHERE</span> Id = <span class="tk-n">2</span>;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>Id  paid
+--  ----
+2   true</code></pre>
+<blockquote><p><strong>Nuance:</strong> If the value argument of <code>JSON_MODIFY</code> is a T-SQL string, it is written to JSON as a <strong>string</strong>: <code>JSON_MODIFY(Doc,'$.paid','true')</code> → <code>{"paid":"true"}</code>. For a real JSON boolean, pass the value with the right type: <code>JSON_MODIFY(Doc,'$.paid', CAST(1 AS bit))</code> → <code>{"paid":true}</code> (verified live).</p></blockquote>
+<h2>3.3 Aggregate rows into JSON: <code>JSON_ARRAYAGG</code> / <code>JSON_OBJECTAGG</code></h2>
+<p>The two new first-class aggregates of 2025 put an end to string-concatenation tricks:</p>
+<div class="cap">» 11-json-agg.sql</div>
+<pre><code><span class="tk-k">SELECT</span> <span class="tk-f">JSON_ARRAYAGG</span>(<span class="tk-f">JSON_VALUE</span>(Doc,<span class="tk-s">'$.customer'</span>)) <span class="tk-k">AS</span> customers,
+       <span class="tk-f">JSON_OBJECTAGG</span>(<span class="tk-f">JSON_VALUE</span>(Doc,<span class="tk-s">'$.customer'</span>)
+                      : <span class="tk-f">CAST</span>(<span class="tk-f">JSON_VALUE</span>(Doc,<span class="tk-s">'$.total'</span>) <span class="tk-k">AS</span> <span class="tk-k">decimal</span>(<span class="tk-n">10</span>,<span class="tk-n">2</span>))) <span class="tk-k">AS</span> totals
+<span class="tk-k">FROM</span> dbo.Orders;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>customers          totals
+-----------------  ------------------------------
+["Ada","Linus"]    {"Ada":1290.50,"Linus":540.00}</code></pre>
+<h2>3.4 Expand a JSON array into rows: <code>OPENJSON</code></h2>
+<div class="cap">» 12-openjson.sql</div>
+<pre><code><span class="tk-k">SELECT</span> o.Id, j.[value] <span class="tk-k">AS</span> item
+<span class="tk-k">FROM</span> dbo.Orders o <span class="tk-k">CROSS</span> <span class="tk-k">APPLY</span> <span class="tk-f">OPENJSON</span>(o.Doc, <span class="tk-s">'$.items'</span>) j;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>Id  item
+--  ----
+1   ssd
+1   ram
+2   kbd</code></pre>
+<p><strong>Field example: orders that contain a specific product.</strong> To search for a value inside a <code>json</code> array, use <code>OPENJSON</code> in a subquery; no separate search service needed:</p>
+<div class="cap">» field-json.sql</div>
+<pre><code><span class="tk-k">SELECT</span> Id, <span class="tk-f">JSON_VALUE</span>(Doc, <span class="tk-s">'$.customer'</span>) <span class="tk-k">AS</span> customer
+<span class="tk-k">FROM</span> dbo.Orders
+<span class="tk-k">WHERE</span> <span class="tk-s">'ssd'</span> <span class="tk-k">IN</span> (<span class="tk-k">SELECT</span> value <span class="tk-k">FROM</span> <span class="tk-f">OPENJSON</span>(Doc, <span class="tk-s">'$.items'</span>));</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>Id  customer
+--  --------
+1   Ada</code></pre>
+<hr>
+<h1>4. Regular Expressions and String Functions</h1>
+<p>Regex inside the language, without CLR, has finally arrived. You can push most of the validation/cleaning logic from the application layer down into the engine.</p>
+<h2>4.1 Extract, replace, count</h2>
+<div class="cap">» 13-regex.sql</div>
+<pre><code><span class="tk-k">SELECT</span> <span class="tk-f">REGEXP_REPLACE</span>(<span class="tk-s">'  too   much    space '</span>, <span class="tk-s">'\s+'</span>, <span class="tk-s">' '</span>)    <span class="tk-k">AS</span> normalized,
+       <span class="tk-f">REGEXP_SUBSTR</span>(<span class="tk-s">'SKU: ABC-12345 stock'</span>, <span class="tk-s">'[A-Z]{3}-\d{5}'</span>) <span class="tk-k">AS</span> sku,
+       <span class="tk-f">REGEXP_COUNT</span>(<span class="tk-s">'a1b2c3d4'</span>, <span class="tk-s">'\d'</span>)                          <span class="tk-k">AS</span> digit_count,
+       <span class="tk-f">REGEXP_INSTR</span>(<span class="tk-s">'order-2026'</span>, <span class="tk-s">'\d{4}'</span>)                     <span class="tk-k">AS</span> year_pos;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>normalized       sku        digit_count  year_pos
+---------------  ---------  -----------  --------
+ too much space  ABC-12345  4            7</code></pre>
+<p>The full set: <code>REGEXP_LIKE</code>, <code>REGEXP_REPLACE</code>, <code>REGEXP_SUBSTR</code>, <code>REGEXP_INSTR</code>, <code>REGEXP_COUNT</code>, <code>REGEXP_MATCHES</code>, <code>REGEXP_SPLIT_TO_TABLE</code>.</p>
+<h2>4.2 A critical nuance: <code>REGEXP_LIKE</code> is a PREDICATE</h2>
+<p>The most important developer detail I found: <code>REGEXP_LIKE</code> is a <strong>search predicate</strong>, used inside <code>WHERE</code>, <code>CASE</code>, <code>CHECK</code>. You cannot select it directly like <code>SELECT ... AS ok</code>, nor compare it with <code>= 0</code>. This is wrong:</p>
+<div class="cap o">↳ real error: predicate used as if it were a scalar</div>
+<pre class="out"><code>Msg 102, Level 15: Incorrect syntax near '='.   -- WHERE REGEXP_LIKE(...) = 0  IS WRONG</code></pre>
+<p>Correct usage, find invalid emails with <code>NOT</code>:</p>
+<div class="cap">» 14-regex-predicate.sql</div>
+<pre><code><span class="tk-k">SELECT</span> email
+<span class="tk-k">FROM</span> (<span class="tk-k">VALUES</span> (<span class="tk-s">'valid@x.com'</span>), (<span class="tk-s">'invalid@@'</span>)) c(email)
+<span class="tk-k">WHERE</span> <span class="tk-k">NOT</span> <span class="tk-f">REGEXP_LIKE</span>(email, <span class="tk-s">'^[\w.+-]+@[\w-]+\.[\w.-]+$'</span>);</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>email
+----------
+invalid@@</code></pre>
+<p>If you want a scalar result, wrap it in <code>CASE</code>:</p>
+<div class="cap">» sql</div>
+<pre><code><span class="tk-k">SELECT</span> email,
+       <span class="tk-k">CASE</span> <span class="tk-k">WHEN</span> <span class="tk-f">REGEXP_LIKE</span>(email,<span class="tk-s">'^[\w.+-]+@[\w-]+\.[\w.-]+$'</span>) <span class="tk-k">THEN</span> <span class="tk-s">'valid'</span> <span class="tk-k">ELSE</span> <span class="tk-s">'INVALID'</span> <span class="tk-k">END</span> <span class="tk-k">AS</span> status
+<span class="tk-k">FROM</span> (<span class="tk-k">VALUES</span> (<span class="tk-s">'ada@dmc.com.tr'</span>),(<span class="tk-s">'bad@@x'</span>),(<span class="tk-s">'linus@kernel.org'</span>)) c(email);</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>email             status
+----------------  ------
+ada@dmc.com.tr    valid
+bad@@x            INVALID
+linus@kernel.org  valid</code></pre>
+<p><strong>Field example: validating a Turkish phone number and IBAN.</strong> You validate form data at the engine level, without trusting the application:</p>
+<div class="cap">» field-regex.sql</div>
+<pre><code><span class="tk-k">SELECT</span> val,
+  <span class="tk-k">CASE</span> <span class="tk-k">WHEN</span> <span class="tk-f">REGEXP_LIKE</span>(val, <span class="tk-s">'^\+90 ?\d{3} ?\d{3} ?\d{2} ?\d{2}$'</span>) <span class="tk-k">THEN</span> <span class="tk-s">'phone OK'</span>
+       <span class="tk-k">WHEN</span> <span class="tk-f">REGEXP_LIKE</span>(val, <span class="tk-s">'^TR\d{24}$'</span>)                        <span class="tk-k">THEN</span> <span class="tk-s">'IBAN OK'</span>
+       <span class="tk-k">ELSE</span> <span class="tk-s">'invalid'</span> <span class="tk-k">END</span> <span class="tk-k">AS</span> result
+<span class="tk-k">FROM</span> (<span class="tk-k">VALUES</span> (<span class="tk-s">'+90 212 945 61 66'</span>), (<span class="tk-s">'TR330006100519786457841326'</span>), (<span class="tk-s">'broken-data'</span>)) v(val);</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>val                          result
+---------------------------  --------
++90 212 945 61 66            phone OK
+TR330006100519786457841326   IBAN OK
+broken-data                  invalid</code></pre>
+<h2>4.3 Split into a table by pattern</h2>
+<div class="cap">» 15-regex-split.sql</div>
+<pre><code><span class="tk-k">SELECT</span> value <span class="tk-k">FROM</span> <span class="tk-f">REGEXP_SPLIT_TO_TABLE</span>(<span class="tk-s">'sql,server;2025|dev'</span>, <span class="tk-s">'[,;|]'</span>);</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>value
+------
+sql
+server
+2025
+dev</code></pre>
+<h2>4.4 Fuzzy (approximate) string matching</h2>
+<p>For typo tolerance and record matching. These are preview features:</p>
+<div class="cap">» 16-fuzzy.sql</div>
+<pre><code><span class="tk-k">SELECT</span> <span class="tk-f">EDIT_DISTANCE</span>(<span class="tk-s">'Istanbul'</span>,<span class="tk-s">'Istambul'</span>)             <span class="tk-k">AS</span> edit_dist,
+       <span class="tk-f">EDIT_DISTANCE_SIMILARITY</span>(<span class="tk-s">'Istanbul'</span>,<span class="tk-s">'Istambul'</span>)  <span class="tk-k">AS</span> edit_sim,
+       <span class="tk-f">JARO_WINKLER_SIMILARITY</span>(<span class="tk-s">'Ankara'</span>,<span class="tk-s">'Ankraa'</span>)       <span class="tk-k">AS</span> jw_sim;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>edit_dist  edit_sim  jw_sim
+---------  --------  ------
+1          88        96</code></pre>
+<p><code>EDIT_DISTANCE</code> = number of edits (insert/delete/substitute) required; the <code>*_SIMILARITY</code> functions return a 0-100 similarity.</p>
+<h2>4.5 Long-requested small additions</h2>
+<div class="cap">» 17-newfuncs.sql</div>
+<pre><code><span class="tk-k">SELECT</span> <span class="tk-s">'sql'</span> || <span class="tk-s">'-'</span> || <span class="tk-s">'2025'</span>                    <span class="tk-k">AS</span> pipe_concat,   <span class="tk-c">-- || concatenation</span>
+       <span class="tk-f">GREATEST</span>(<span class="tk-n">3</span>,<span class="tk-n">9</span>,<span class="tk-n">4</span>,<span class="tk-n">7</span>)                         <span class="tk-k">AS</span> greatest_v,
+       <span class="tk-f">LEAST</span>(<span class="tk-n">3</span>,<span class="tk-n">9</span>,<span class="tk-n">4</span>,<span class="tk-n">7</span>)                            <span class="tk-k">AS</span> least_v,
+       <span class="tk-f">CURRENT_DATE</span>                              <span class="tk-k">AS</span> today,
+       <span class="tk-f">BASE64_ENCODE</span>(<span class="tk-f">CAST</span>(<span class="tk-s">'DMC'</span> <span class="tk-k">AS</span> <span class="tk-k">varbinary</span>(<span class="tk-n">8</span>))) <span class="tk-k">AS</span> b64,
+       <span class="tk-f">CAST</span>(<span class="tk-f">BASE64_DECODE</span>(<span class="tk-s">'RE1D'</span>) <span class="tk-k">AS</span> <span class="tk-k">varchar</span>(<span class="tk-n">8</span>)) <span class="tk-k">AS</span> b64_back;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>pipe_concat  greatest_v  least_v  today       b64   b64_back
+-----------  ----------  -------  ----------  ----  --------
+sql-2025     9           3        2026-07-26  RE1D  DMC</code></pre>
+<p><code>PRODUCT()</code>, a new aggregate computing the product of a set (compound growth, probabilities, etc.):</p>
+<div class="cap">» 18-product.sql</div>
+<pre><code><span class="tk-k">SELECT</span> category, <span class="tk-f">PRODUCT</span>(factor) <span class="tk-k">AS</span> compound
+<span class="tk-k">FROM</span> (<span class="tk-k">VALUES</span> (<span class="tk-s">'growth'</span>,<span class="tk-n">1.10</span>), (<span class="tk-s">'growth'</span>,<span class="tk-n">1.05</span>), (<span class="tk-s">'growth'</span>,<span class="tk-n">1.20</span>)) t(category,factor)
+<span class="tk-k">GROUP</span> <span class="tk-k">BY</span> category;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>category  compound
+--------  --------
+growth    1.386000</code></pre>
+<p>Also: <code>UNISTR</code> (Unicode escapes), <code>CURRENT_DATE</code>, <code>SUBSTRING</code> with an optional <code>length</code> (ANSI alignment), <code>DATEADD</code> now accepts <code>bigint</code>, and <code>GENERATE_SERIES</code> for number sequences:</p>
+<div class="cap">» sql</div>
+<pre><code><span class="tk-k">SELECT</span> <span class="tk-f">STRING_AGG</span>(<span class="tk-f">CAST</span>(value <span class="tk-k">AS</span> <span class="tk-k">varchar</span>(<span class="tk-n">4</span>)), <span class="tk-s">','</span>) <span class="tk-k">AS</span> series <span class="tk-k">FROM</span> <span class="tk-f">GENERATE_SERIES</span>(<span class="tk-n">1</span>, <span class="tk-n">10</span>, <span class="tk-n">2</span>);</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>series
+---------
+1,3,5,7,9</code></pre>
+<hr>
+<h1>Part III · Integration, Performance and Security</h1>
+<p><em>Connect the database to services and event streams, scale concurrency, and protect data layer by layer. This is where the real difference shows up in production.</em></p>
+<h1>5. Application Integration</h1>
+<p>SQL Server 2025 makes the database a first-class part of event-driven and service-oriented architectures.</p>
+<h2>5.1 REST calls from T-SQL: <code>sp_invoke_external_rest_endpoint</code></h2>
+<p>Call a REST/GraphQL endpoint directly from the database: trigger an Azure Function, update a Power BI dashboard, talk to Azure OpenAI, call an on-prem service.</p>
+<div class="cap">» 19-rest.sql</div>
+<pre><code><span class="tk-k">DECLARE</span> @response <span class="tk-k">nvarchar</span>(<span class="tk-f">max</span>);
+<span class="tk-k">EXEC</span> sp_invoke_external_rest_endpoint
+     @url     = <span class="tk-s">'https://api.example.com/v1/notify'</span>,
+     @method  = <span class="tk-s">'POST'</span>,
+     @payload = N<span class="tk-s">'{"orderId": 42, "status": "shipped"}'</span>,
+     @headers = <span class="tk-s">'{"Content-Type":"application/json"}'</span>,
+     @response = @response OUTPUT;
+<span class="tk-k">SELECT</span> <span class="tk-f">JSON_VALUE</span>(@response, <span class="tk-s">'$.result'</span>) <span class="tk-k">AS</span> result;</code></pre>
+<blockquote><p><strong>Security:</strong> The endpoint must be HTTPS + TLS; credentials live in a <code>DATABASE SCOPED CREDENTIAL</code>. This feature is enabled via <code>sp_configure 'external rest endpoint enabled'</code>.</p></blockquote>
+<h2>5.2 Automatic REST/GraphQL: Data API Builder (DAB)</h2>
+<p><strong>Data API Builder</strong> produces secure REST and GraphQL endpoints from your tables and views <strong>without writing code</strong>. A single JSON configuration is enough:</p>
+<div class="cap">» 20-dab-config.json</div>
+<pre><code>{
+  "data-source": { "database-type": "mssql", "connection-string": "@env('SQL_CONN')" },
+  "entities": {
+    "Article": {
+      "source": "dbo.Articles",
+      "permissions": [
+        { "role": "anonymous", "actions": ["read"] },
+        { "role": "authenticated", "actions": ["create", "update"] }
+      ]
+    }
+  }
+}</code></pre>
+<p>Run: <code>dab start</code>. Now <code>GET /api/Article</code> (REST) and <code>/graphql</code> (GraphQL) are ready, with paging, filtering and row-level security. Ideal for frontend teams. I ran DAB against DevBook in the container; the real <code>GET /api/Article?$first=2</code> response (including the vector column):</p>
+<div class="cap o">↳ real DAB response: with no code written</div>
+<pre class="out"><code>{ "value": [
+    { "id": 1, "title": "Article 1", "embedding": [0.01, 0.02, 0.03, 0.04, 0.05] },
+    { "id": 2, "title": "Article 2", "embedding": [0.02, 0.04, 0.06, 0.08, 0.10] } ] }</code></pre>
+<h2>5.3 For AI agents: SQL MCP Server</h2>
+<p>The <strong>SQL MCP Server</strong> (via Data API Builder) lets custom or Foundry AI agents connect to the database in a <strong>secure, governed</strong> way. Tools like GitHub Copilot and Cursor can reason over the schema and data through MCP. Azure SQL Hyperscale also exposes a direct SQL MCP endpoint.</p>
+<h2>5.4 Event streaming: Change Event Streaming (CES)</h2>
+<p>CES publishes DML changes (insert/update/delete), <strong>with schema plus old/new values</strong>, near real time to <strong>Azure Event Hubs</strong>. Format: <strong>CloudEvent</strong> (JSON or Avro Binary). It is the event-driven successor to CDC, for keeping microservices, cache invalidation and search indexing in sync with data.</p>
+<figure class="img"><img src="assets/fig-ces.png" alt=""><figcaption>Figure 6: Change streaming, DML → CES → Event Hubs (CloudEvent) → consumers</figcaption></figure>
+<p><strong>Field example: keep search and cache in sync with data.</strong> When an order is updated, CES publishes the change to Event Hubs as a CloudEvent; a consumer microservice picks up the event and refreshes the search index and cache. That solves the "the database was written but the search results/cache are stale" problem without a polling job or extra code on the application side.</p>
+<blockquote><p>CES is a <strong>preview</strong> feature (<code>PREVIEW_FEATURES</code>). Upgrade note: the old <strong>Synapse Link</strong> was removed; the new path for analytical replication is <strong>Fabric Mirroring</strong> (see Chapter 8).</p></blockquote>
+<hr>
+<h1>6. Concurrency and Performance</h1>
+<p>The engine improvements that most affect a developer's daily life.</p>
+<h2>6.1 Optimized Locking</h2>
+<p><strong>Optimized Locking</strong> radically reduces lock memory and blocking. Two mechanisms: <strong>Lock After Qualification (LAQ)</strong> (a row is locked only after it qualifies) and <strong>Transaction-ID (TID) locking</strong>. The result: lock escalation is largely eliminated, with far less blocking under high-concurrency OLTP.</p>
+<figure class="img"><img src="assets/fig-locking.png" alt=""><figcaption>Figure 7: Traditional locking locks the whole page/table; Optimized Locking locks only the qualifying row</figcaption></figure>
+<p>The prerequisite is <strong>Accelerated Database Recovery (ADR)</strong>; it works best with <strong>RCSI</strong>:</p>
+<div class="cap">» 21-optimized-locking.sql</div>
+<pre><code><span class="tk-k">ALTER</span> <span class="tk-k">DATABASE</span> DevBook <span class="tk-k">SET</span> ACCELERATED_DATABASE_RECOVERY = <span class="tk-k">ON</span>;
+<span class="tk-k">ALTER</span> <span class="tk-k">DATABASE</span> DevBook <span class="tk-k">SET</span> READ_COMMITTED_SNAPSHOT <span class="tk-k">ON</span> <span class="tk-k">WITH</span> ROLLBACK IMMEDIATE;
+
+<span class="tk-k">SELECT</span> is_accelerated_database_recovery_on <span class="tk-k">AS</span> adr,
+       is_read_committed_snapshot_on       <span class="tk-k">AS</span> rcsi
+<span class="tk-k">FROM</span> sys.databases <span class="tk-k">WHERE</span> name = <span class="tk-s">'DevBook'</span>;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>adr  rcsi
+---  ----
+1    1</code></pre>
+<p><strong>Field example: an order counter during a flash sale.</strong> When a discount starts, thousands of concurrent orders update a shared stock/counter row. Classic locking escalates to page/table locks and blocking explodes. With ADR + optimized locking, only the qualifying row is locked, so throughput rises noticeably; moving the hottest counters to In-Memory OLTP (Chapter 6.5) speeds it up further.</p>
+<h2>6.2 Optional Parameter Plan Optimization (OPPO)</h2>
+<p>A new cure for the classic "catch-all" query problem (optional/NULL parameters stuck on a single plan). OPPO extends the Parameter Sensitive Plan Optimization (PSPO) infrastructure to produce <strong>different plans for optional parameter values</strong>, reducing the performance collapse of the <code>WHERE (@x IS NULL OR col = @x)</code> pattern.</p>
+<h2>6.3 The Intelligent Query Processing (IQP) family</h2>
+<p>Features that speed up existing workloads with minimal effort. The 2025 additions:</p>
+<table><thead><tr><th>Feature</th><th>What it does</th></tr></thead><tbody><tr><td>CE feedback for expressions</td><td>Cardinality estimation learns from history at the expression level</td></tr><tr><td>OPPO</td><td>Multiple plans by optional parameter</td></tr><tr><td>DOP feedback (on by default)</td><td>Tunes degree of parallelism from history</td></tr><tr><td>Query Store for secondaries (on by default)</td><td>Query Store also on readable secondaries</td></tr><tr><td>ABORT_QUERY_EXECUTION hint</td><td>Blocks future execution of a known problematic query</td></tr></tbody></table>
+<h2>6.4 Catch regressions with Query Store</h2>
+<p>Query Store keeps plan history and runtime statistics; you can find a regressed query and force the good plan.</p>
+<div class="cap">» 22-query-store.sql</div>
+<pre><code><span class="tk-k">SELECT</span> <span class="tk-k">TOP</span> <span class="tk-n">10</span> q.query_id, rs.avg_duration, rs.count_executions, p.plan_id
+<span class="tk-k">FROM</span> sys.query_store_runtime_stats rs
+<span class="tk-k">JOIN</span> sys.query_store_plan  p <span class="tk-k">ON</span> p.plan_id  = rs.plan_id
+<span class="tk-k">JOIN</span> sys.query_store_query q <span class="tk-k">ON</span> q.query_id = p.query_id
+<span class="tk-k">ORDER</span> <span class="tk-k">BY</span> rs.avg_duration <span class="tk-k">DESC</span>;
+
+<span class="tk-c">-- force the good plan</span>
+<span class="tk-k">EXEC</span> sys.sp_query_store_force_plan @query_id = <span class="tk-n">42</span>, @plan_id = <span class="tk-n">7</span>;</code></pre>
+<h2>6.5 In-Memory OLTP: memory-optimized tables for the hot path</h2>
+<p>For "hot" tables that need very high write throughput (counters, sessions, queues), <strong>memory-optimized tables</strong> run lock- and latch-free. First you need a <code>MEMORY_OPTIMIZED_DATA</code> filegroup:</p>
+<div class="cap">» 27-inmemory.sql</div>
+<pre><code><span class="tk-k">ALTER</span> <span class="tk-k">DATABASE</span> DevBook <span class="tk-k">ADD</span> FILEGROUP imoltp CONTAINS MEMORY_OPTIMIZED_DATA;
+<span class="tk-k">ALTER</span> <span class="tk-k">DATABASE</span> DevBook <span class="tk-k">ADD</span> FILE (name=<span class="tk-s">'imoltp1'</span>, filename=<span class="tk-s">'/var/opt/mssql/data/imoltp1'</span>) TO FILEGROUP imoltp;
+
+<span class="tk-k">CREATE</span> <span class="tk-k">TABLE</span> dbo.HotCounter (Id <span class="tk-k">int</span> <span class="tk-k">PRIMARY</span> <span class="tk-k">KEY</span> NONCLUSTERED, Hits <span class="tk-k">bigint</span>)
+    <span class="tk-k">WITH</span> (MEMORY_OPTIMIZED = <span class="tk-k">ON</span>, DURABILITY = SCHEMA_AND_DATA);
+<span class="tk-k">INSERT</span> dbo.HotCounter <span class="tk-k">VALUES</span> (<span class="tk-n">1</span>, <span class="tk-n">0</span>);
+<span class="tk-k">UPDATE</span> dbo.HotCounter <span class="tk-k">SET</span> Hits = Hits + <span class="tk-n">1</span> <span class="tk-k">WHERE</span> Id = <span class="tk-n">1</span>;
+<span class="tk-k">SELECT</span> name, is_memory_optimized, durability_desc <span class="tk-k">FROM</span> sys.tables <span class="tk-k">WHERE</span> name=<span class="tk-s">'HotCounter'</span>;</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>name        is_memory_optimized  durability_desc
+----------  -------------------  ---------------
+HotCounter  1                    SCHEMA_AND_DATA</code></pre>
+<p><code>DURABILITY = SCHEMA_AND_DATA</code> keeps the data durable; <code>SCHEMA_ONLY</code> keeps only the schema (data is lost on restart, ideal, and fastest, for transient/session data).</p>
+<hr>
+<h1>7. Security (A Developer's Responsibility)</h1>
+<p>Security is not only the DBA's job but also the coder's. What a developer needs to know in SQL Server 2025.</p>
+<h2>7.1 Always parameterize: SQL Injection</h2>
+<p>Even the new RegEx/JSON functions do not excuse building queries by string concatenation. Always use parameterized commands (<code>SqlParameter</code>, EF Core, Dapper parameterize automatically). If dynamic SQL is unavoidable, use <code>sp_executesql</code> + parameters.</p>
+<h2>7.2 Protect data layer by layer</h2>
+<table><thead><tr><th>Layer</th><th>Tool</th><th>When</th></tr></thead><tbody><tr><td>Encryption in use</td><td>Always Encrypted (+ secure enclaves)</td><td>Even the DBA must not see it; equality-plus queries with enclaves</td></tr><tr><td>Row isolation</td><td>Row-Level Security (RLS)</td><td>Tenant separation in multi-tenant apps</td></tr><tr><td>Masking</td><td>Dynamic Data Masking (DDM)</td><td>Hide PII in the UI</td></tr><tr><td>Tamper evidence</td><td>Ledger</td><td>Cryptographic verifiability / compliance</td></tr><tr><td>Bulk encryption</td><td>TDE + AKV/Managed HSM</td><td>Encrypted data at rest</td></tr></tbody></table>
+<figure class="img"><img src="assets/fig-security.png" alt=""><figcaption>Figure 8: Defense in depth: each layer from transport to disk adds a distinct safeguard</figcaption></figure>
+<h2>7.3 RLS + DDM: a live example and an important caveat</h2>
+<div class="cap">» 23-rls-ddm.sql</div>
+<pre><code><span class="tk-k">CREATE</span> <span class="tk-k">TABLE</span> dbo.Customers (
+    Id       <span class="tk-k">int</span>,
+    TenantId <span class="tk-k">int</span>,
+    Ssn      <span class="tk-k">char</span>(<span class="tk-n">11</span>) <span class="tk-k">MASKED</span> <span class="tk-k">WITH</span> (<span class="tk-k">FUNCTION</span> = <span class="tk-s">'partial(0,"*********",2)'</span>)
+);
+<span class="tk-k">INSERT</span> dbo.Customers <span class="tk-k">VALUES</span> (<span class="tk-n">1</span>,<span class="tk-n">10</span>,<span class="tk-s">'12345678901'</span>), (<span class="tk-n">2</span>,<span class="tk-n">20</span>,<span class="tk-s">'98765432109'</span>);
+<span class="tk-k">SELECT</span> Id, TenantId, Ssn <span class="tk-k">FROM</span> dbo.Customers;   <span class="tk-c">-- privileged (UNMASK) user view</span></code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>Id  TenantId  Ssn
+--  --------  -----------
+1   10        12345678901
+2   20        98765432109</code></pre>
+<blockquote><p><strong>Masking ≠ authorization.</strong> Above, <code>sa</code> (which holds UNMASK) sees the real SSN; masking only hides the <strong>presentation</strong> and is exposed to inference via <code>WHERE</code>/<code>ORDER BY</code>. For a real privacy boundary you need <strong>RLS + Always Encrypted</strong>. Treat DDM as a "shoulder-surfing reducer", not "security".</p></blockquote>
+<h2>7.4 2025 security updates</h2>
+<ul><li><strong>PBKDF2 password hashing by default</strong> → NIST SP 800-63b compliance.</li><li><strong>TLS 1.3 + TDS 8.0</strong>: enforce with <code>Encrypt=Strict</code> in the connection string.</li><li><strong>Managed Identity</strong> (Azure Arc) for keyless identity on outbound connections; <strong>EKM</strong> now supports <strong>Managed HSM</strong>.</li><li><strong>Purview access policies removed</strong> → replaced by fixed server roles (<code>##MS_DatabaseConnector##</code>, etc.).</li></ul>
+<h2>7.5 Ledger: an unalterable, undeletable audit trail</h2>
+<p>When you must <strong>cryptographically prove</strong> that audit/compliance records haven't been tampered with, Ledger is exactly the tool. An <strong>append-only ledger</strong> table accepts only <code>INSERT</code>; <code>UPDATE</code>/<code>DELETE</code> are rejected by the engine:</p>
+<div class="cap">» 28-ledger.sql</div>
+<pre><code><span class="tk-k">CREATE</span> <span class="tk-k">TABLE</span> dbo.AuditLog (Id <span class="tk-k">int</span> <span class="tk-k">IDENTITY</span> <span class="tk-k">PRIMARY</span> <span class="tk-k">KEY</span>, Actor sysname, Action <span class="tk-k">nvarchar</span>(<span class="tk-n">50</span>))
+    <span class="tk-k">WITH</span> (LEDGER = <span class="tk-k">ON</span> (APPEND_ONLY = <span class="tk-k">ON</span>));
+<span class="tk-k">INSERT</span> dbo.AuditLog (Actor, Action) <span class="tk-k">VALUES</span> (<span class="tk-s">'ada'</span>,<span class="tk-s">'GRANT'</span>), (<span class="tk-s">'linus'</span>,<span class="tk-s">'REVOKE'</span>);
+<span class="tk-k">UPDATE</span> dbo.AuditLog <span class="tk-k">SET</span> Action = <span class="tk-s">'x'</span> <span class="tk-k">WHERE</span> Id = <span class="tk-n">1</span>;   <span class="tk-c">-- rejected</span></code></pre>
+<div class="cap o">↳ real result of the UPDATE attempt</div>
+<pre class="out"><code>Msg 37359, Level 16: Updates are not allowed for the append only Ledger table 'dbo.AuditLog'.</code></pre>
+<p>Updatable ledger tables also exist, they keep history via system-versioning and an automatic ledger view; each row's cryptographic hash can be verified through <code>sys.database_ledger_transactions</code>. Append-only is the simplest option for <strong>insert-only</strong> audit streams that need protection against deletion/tampering.</p>
+<blockquote><p>Keeping the ledger in the <strong>database</strong> rather than the application also prevents the audit trail from being corrupted by an application bug or malicious access.</p></blockquote>
+<p><strong>Field example: a compliance audit trail (GDPR/KVKK).</strong> You must prove that the "who accessed which data, when" record has not been altered afterwards. An append-only ledger table holds this trail; an auditor can verify the records' cryptographic integrity through <code>sys.database_ledger_transactions</code>. The record is secured in the engine, not in the application layer.</p>
+<h2>7.6 Always Encrypted: not even the DBA can read it (live, local)</h2>
+<p>With Always Encrypted, data is encrypted <strong>on the client</strong>; the server, including the DBA, only ever sees ciphertext, and the key never lives on the server. I set this up <strong>fully locally</strong> (with no Azure or Windows certificate store): a self-signed RSA certificate as the Column Master Key, and a <strong>custom key store provider</strong> (<code>SqlColumnEncryptionKeyStoreProvider</code>) in <code>Microsoft.Data.SqlClient</code>. The full, compiling code: <code>samples/AlwaysEncryptedDemo</code>.</p>
+<div class="cap">» 31-always-encrypted.sql</div>
+<pre><code><span class="tk-k">CREATE</span> COLUMN MASTER <span class="tk-k">KEY</span> CMK1 <span class="tk-k">WITH</span> (KEY_STORE_PROVIDER_NAME=<span class="tk-s">'DMC_LOCAL'</span>, KEY_PATH=<span class="tk-s">'local/dmc-cmk'</span>);
+<span class="tk-k">CREATE</span> COLUMN ENCRYPTION <span class="tk-k">KEY</span> CEK1 <span class="tk-k">WITH</span> <span class="tk-k">VALUES</span>
+  (COLUMN_MASTER_KEY=CMK1, ALGORITHM=<span class="tk-s">'RSA_OAEP'</span>, ENCRYPTED_VALUE=<span class="tk-n">0</span>x...);   <span class="tk-c">-- produced by the client</span>
+
+<span class="tk-k">CREATE</span> <span class="tk-k">TABLE</span> dbo.Patients (
+  Id <span class="tk-k">int</span> <span class="tk-k">IDENTITY</span> <span class="tk-k">PRIMARY</span> <span class="tk-k">KEY</span>, Name <span class="tk-k">nvarchar</span>(<span class="tk-n">60</span>),
+  Ssn <span class="tk-k">nvarchar</span>(<span class="tk-n">16</span>) COLLATE Latin1_General_BIN2
+      ENCRYPTED <span class="tk-k">WITH</span> (COLUMN_ENCRYPTION_KEY=CEK1, ENCRYPTION_TYPE=DETERMINISTIC,
+                      ALGORITHM=<span class="tk-s">'AEAD_AES_256_CBC_HMAC_SHA_256'</span>));</code></pre>
+<p>A <strong>client</strong> that adds <code>Column Encryption Setting=Enabled</code> to the connection string and registers the provider sees the plaintext (I ran this myself):</p>
+<div class="cap o">↳ client (AE enabled): decrypted</div>
+<pre class="out"><code>Id  Name          Ssn
+--  ------------  -----------
+1   Ada Lovelace  12345678901
+2   Linus T.      98765432109</code></pre>
+<p>The same rows, in a <strong>plain query</strong> with no key (typical DBA access), are only ciphertext:</p>
+<div class="cap o">↳ plain sqlcmd (no key): ciphertext</div>
+<pre class="out"><code>Id  Name          Ssn
+--  ------------  ------------------------------------------
+1   Ada Lovelace  0x01BB7ED4FA4BEF8EC7F92F62643801121A131A...
+2   Linus T.      0x013C9A5AF77F693B2C08E79892914AAC4E68021...</code></pre>
+<p>The catalog confirms it too: the <code>Ssn</code> column is DETERMINISTIC-encrypted with <code>CEK1</code>/<code>CMK1</code>, provider <code>DMC_LOCAL</code>. Deterministic encryption allows equality search and joins (a <code>BIN2</code> collation is required on text columns); for maximum privacy use RANDOMIZED. <strong>The difference from DDM (Chapter 7.3):</strong> masking only hides the presentation; with Always Encrypted the key lives on the client, so the server can never see the data under any circumstances.</p>
+<hr>
+<h1>Part IV · Code, Production and Practice</h1>
+<p><em>Connect from code, upgrade safely, fix errors quickly, and finish with real-world recipes.</em></p>
+<h1>8. Connecting from Code</h1>
+<h2>8.1 .NET (Microsoft.Data.SqlClient)</h2>
+<p>Native vectors require <strong>6.1.0+</strong>. Connection string with strict encryption (TDS 8.0):</p>
+<div class="cap">» 24-connection.cs</div>
+<pre><code>var cs = "Server=tcp:localhost,1433;Database=DevBook;User Id=app;Password=***;"
+       + "Encrypt=Strict;TrustServerCertificate=False;";
+await using var conn = new SqlConnection(cs);
+await conn.OpenAsync();
+
+// Vector parameter (Microsoft.Data.SqlClient 6.1+ / .NET 10 SqlDbType.Vector)
+var cmd = new SqlCommand(
+    "SELECT TOP 5 id, title FROM dbo.Articles ORDER BY VECTOR_DISTANCE('cosine', embedding, @q)", conn);
+cmd.Parameters.Add(new SqlParameter("@q", new SqlVector&lt;float&gt;(queryEmbedding)));
+await using var r = await cmd.ExecuteReaderAsync();</code></pre>
+<h2>8.2 EF Core 10: semantic search</h2>
+<div class="cap">» 25-efcore-search.cs</div>
+<pre><code>var q = new SqlVector&lt;float&gt;(queryEmbedding);
+var results = await db.Articles
+    .Select(a =&gt; new {
+        a.Title,
+        Distance = EF.Functions.VectorDistance("cosine", a.Embedding, q) })
+    .OrderBy(x =&gt; x.Distance)
+    .Take(10)
+    .ToListAsync();</code></pre>
+<h2>8.3 Python (pyodbc)</h2>
+<div class="cap">» 26-python.py</div>
+<pre><code>import pyodbc, json
+cn = pyodbc.connect(
+    "DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=DevBook;"
+    "UID=app;PWD=***;Encrypt=yes;TrustServerCertificate=yes")
+cur = cn.cursor()
+qv = json.dumps([0.3, 0.3, 0.3, 0.3, 0.3])   # send the vector as a JSON array
+cur.execute("""
+    SELECT TOP (3) id, title, VECTOR_DISTANCE('cosine', embedding, CAST(? AS vector(5))) AS dist
+    FROM dbo.Articles ORDER BY dist""", qv)
+for row in cur.fetchall():
+    print(row.id, row.title, row.dist)</code></pre>
+<blockquote><p><strong>Tip:</strong> On drivers that don't yet know native vectors (ODBC/JDBC), send the vector as <strong>JSON array text</strong> and convert with <code>CAST(... AS vector(n))</code>, SQL Server also accepts vectors as text for backward compatibility.</p></blockquote>
+<hr>
+<h1>9. Upgrade and Compatibility (Developer Checklist)</h1>
+<ul><li><strong>Compatibility level 170</strong>: Some new functions (<code>AI_GENERATE_CHUNKS</code>, etc.) require it.</li><li><strong>Discontinued components:</strong> Data Quality Services, Master Data Services, <strong>Synapse Link</strong> (→ <strong>Fabric Mirroring</strong>), Purview access policies, <strong>Web edition</strong>. If your code/workflow depends on these, plan a migration.</li><li><strong>Deprecated:</strong> hot add CPU, lightweight pooling / fiber mode.</li><li><strong>Driver versions:</strong> For native vectors, <code>Microsoft.Data.SqlClient</code> 6.1+, EF Core 10, .NET 10 (<code>SqlDbType.Vector</code>).</li><li><strong>Preview → GA:</strong> Vector index / <code>VECTOR_SEARCH</code>, CES, fuzzy matching are preview on the box product; tie production decisions to the GA timeline and remember <code>PREVIEW_FEATURES</code> is required.</li><li><strong>Box vs cloud:</strong> The DiskANN "latest version" index + <code>WITH APPROXIMATE</code> is currently only on Azure SQL DB / Fabric SQL; on the box use <code>VECTOR_SEARCH ... TOP_N</code>.</li><li><strong>Free development SKUs:</strong> Standard Developer and Enterprise Developer, fully featured, non-production licenses.</li></ul>
+<hr>
+<h1>10. Common Errors and Troubleshooting</h1>
+<p>This table collects the errors I actually hit while testing and their fixes, the points that cost the most time when working with the vector/AI features.</p>
+<table><thead><tr><th>Error (message)</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td><code>Msg 1934 … CREATE VECTOR INDEX failed … 'QUOTED_IDENTIFIER'</code></td><td><code>QUOTED_IDENTIFIER</code> is off in the session (sqlcmd default)</td><td><code>SET QUOTED_IDENTIFIER ON;</code> before the index</td></tr><tr><td><code>Msg 102 … Incorrect syntax near 'APPROXIMATE'</code></td><td><code>WITH APPROXIMATE</code> doesn't exist on the box product</td><td>Use <code>VECTOR_SEARCH … TOP_N</code> on the box; <code>WITH APPROXIMATE</code> is Azure SQL DB/Fabric only</td></tr><tr><td><code>Msg 102 … Incorrect syntax near '='</code></td><td><code>REGEXP_LIKE(...) = 0</code>, a predicate used as a scalar</td><td><code>WHERE NOT REGEXP_LIKE(...)</code> or <code>CASE WHEN REGEXP_LIKE(...)</code></td></tr><tr><td><code>Msg 207 … Invalid column name 'id'</code> (VECTOR_SEARCH)</td><td>Table column referenced via the result alias</td><td>Table columns via the <strong>table alias</strong>, <code>distance</code> via the <strong>result alias</strong></td></tr><tr><td><code>Msg 42227 … Cannot find a vector index with metric 'cosine'</code></td><td>No index, or its metric doesn't match</td><td><code>CREATE VECTOR INDEX … WITH (METRIC='cosine', …)</code> with the same metric</td></tr><tr><td><code>Incorrect syntax near 'REGEXP_LIKE'</code> / function not found</td><td>Preview/compatibility context missing</td><td><code>PREVIEW_FEATURES = ON</code> + <code>COMPATIBILITY_LEVEL = 170</code></td></tr><tr><td><code>AI_GENERATE_CHUNKS</code> not found</td><td>Compatibility level &lt; 170</td><td><code>ALTER DATABASE … SET COMPATIBILITY_LEVEL = 170;</code></td></tr><tr><td>Vector index/search behaves as if absent</td><td><code>PREVIEW_FEATURES</code> is off</td><td><code>ALTER DATABASE SCOPED CONFIGURATION SET PREVIEW_FEATURES = ON;</code></td></tr></tbody></table>
+<blockquote><p><strong>Golden rule:</strong> In a database that uses vector/AI, guarantee the trio at the start of the session, <code>PREVIEW_FEATURES = ON</code>, <code>COMPATIBILITY_LEVEL = 170</code>, <code>SET QUOTED_IDENTIFIER ON</code>.</p></blockquote>
+<hr>
+<h1>11. Practical Recipes (Cookbook)</h1>
+<p>I ran and verified every recipe below myself.</p>
+<h2>11.1 Hybrid search: vector + keyword</h2>
+<p>Combine semantic proximity with a classic filter, <code>WHERE</code> filters first, then vector distance ranks:</p>
+<div class="cap">» r11-hybrid.sql</div>
+<pre><code><span class="tk-k">DECLARE</span> @qv <span class="tk-k">vector</span>(<span class="tk-n">5</span>) = <span class="tk-s">'[0.3,0.3,0.3,0.3,0.3]'</span>;
+<span class="tk-k">SELECT</span> <span class="tk-k">TOP</span> (<span class="tk-n">3</span>) id, title, <span class="tk-f">VECTOR_DISTANCE</span>(<span class="tk-s">'cosine'</span>, embedding, @qv) <span class="tk-k">AS</span> dist
+<span class="tk-k">FROM</span> dbo.Articles
+<span class="tk-k">WHERE</span> title <span class="tk-k">LIKE</span> <span class="tk-s">'%1%'</span>          <span class="tk-c">-- keyword / category filter</span>
+<span class="tk-k">ORDER</span> <span class="tk-k">BY</span> dist;                  <span class="tk-c">-- semantic ranking</span></code></pre>
+<h2>11.2 A JSON audit log</h2>
+<p>Store changes as schemaless <code>json</code>, analyze with a query:</p>
+<div class="cap">» r11-audit.sql</div>
+<pre><code><span class="tk-k">CREATE</span> <span class="tk-k">TABLE</span> dbo.Audit (Id <span class="tk-k">int</span> <span class="tk-k">IDENTITY</span>, Event <span class="tk-k">json</span>);
+<span class="tk-k">INSERT</span> dbo.Audit (Event) <span class="tk-k">VALUES</span>
+ (N<span class="tk-s">'{"user":"ada","action":"login","ok":true}'</span>),
+ (N<span class="tk-s">'{"user":"ada","action":"delete","ok":false}'</span>);
+
+<span class="tk-k">SELECT</span> <span class="tk-f">JSON_VALUE</span>(Event,<span class="tk-s">'$.user'</span>) <span class="tk-k">AS</span> usr, <span class="tk-f">COUNT</span>(*) <span class="tk-k">AS</span> delete_count
+<span class="tk-k">FROM</span> dbo.Audit
+<span class="tk-k">WHERE</span> <span class="tk-f">JSON_VALUE</span>(Event,<span class="tk-s">'$.action'</span>) = <span class="tk-s">'delete'</span>
+<span class="tk-k">GROUP</span> <span class="tk-k">BY</span> <span class="tk-f">JSON_VALUE</span>(Event,<span class="tk-s">'$.user'</span>);</code></pre>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>usr  delete_count
+---  ------------
+ada  1</code></pre>
+<h2>11.3 Push validation into the table: a RegEx <code>CHECK</code> constraint</h2>
+<p>Reject invalid data at the engine level, without trusting the application:</p>
+<div class="cap">» r11-check.sql</div>
+<pre><code><span class="tk-k">CREATE</span> <span class="tk-k">TABLE</span> dbo.Signup (
+    email <span class="tk-k">nvarchar</span>(<span class="tk-n">200</span>) CHECK (<span class="tk-f">REGEXP_LIKE</span>(email, <span class="tk-s">'^[\w.+-]+@[\w-]+\.[\w.-]+$'</span>))
+);
+<span class="tk-k">INSERT</span> dbo.Signup <span class="tk-k">VALUES</span> (<span class="tk-s">'ok@dmc.com'</span>);   <span class="tk-c">-- accepted</span>
+<span class="tk-k">INSERT</span> dbo.Signup <span class="tk-k">VALUES</span> (<span class="tk-s">'bad@@'</span>);        <span class="tk-c">-- CHECK violation → rejected</span></code></pre>
+<blockquote><p>Because <code>REGEXP_LIKE</code> is a predicate, it can be used directly in a <code>CHECK</code> constraint, even if the application layer is bypassed, an invalid email cannot enter the table.</p></blockquote>
+<h2>11.4 End-to-end mini-project: real semantic search</h2>
+<p>I ran these examples on SQL Server 2025 myself: I turned real documents into vectors with a local embedding model (Ollama <code>all-minilm</code>, 384 dims), loaded them into a <code>vector(384)</code> column, and searched with live <code>VECTOR_DISTANCE</code>. (In production you generate embeddings with <code>AI_GENERATE_EMBEDDINGS</code> + Azure OpenAI, see Chapter 2.4; don't forget the engine's HTTPS requirement.)</p>
+<p><strong>1) Knowledge base, load with real embeddings.</strong> Each document is embedded with an external model; the result is stored as <code>vector(384)</code>:</p>
+<div class="cap">» project-1.sql</div>
+<pre><code><span class="tk-k">CREATE</span> <span class="tk-k">TABLE</span> dbo.Kb (id <span class="tk-k">int</span> <span class="tk-k">PRIMARY</span> <span class="tk-k">KEY</span>, chunk <span class="tk-k">nvarchar</span>(<span class="tk-n">300</span>), embedding <span class="tk-k">vector</span>(<span class="tk-n">384</span>));
+<span class="tk-c">-- Each row is filled with a real 384-dim vector from an embedding model</span>
+<span class="tk-k">INSERT</span> dbo.Kb <span class="tk-k">VALUES</span> (<span class="tk-n">1</span>, N<span class="tk-s">'SQL Server 2025 offers a built-in vector type and DiskANN index for semantic similarity search.'</span>, <span class="tk-f">CAST</span>(<span class="tk-s">'[...]'</span> <span class="tk-k">AS</span> <span class="tk-k">vector</span>(<span class="tk-n">384</span>)));
+<span class="tk-c">-- ... 6 documents ...</span></code></pre>
+<p><strong>2) Embed the question, fetch the 3 nearest documents</strong> (live output):</p>
+<div class="cap">» project-2.sql</div>
+<pre><code><span class="tk-k">DECLARE</span> @q <span class="tk-k">vector</span>(<span class="tk-n">384</span>) = <span class="tk-f">CAST</span>(<span class="tk-s">'[...question embedding...]'</span> <span class="tk-k">AS</span> <span class="tk-k">vector</span>(<span class="tk-n">384</span>));
+<span class="tk-k">SELECT</span> <span class="tk-k">TOP</span> (<span class="tk-n">3</span>) id, chunk, <span class="tk-f">ROUND</span>(<span class="tk-f">VECTOR_DISTANCE</span>(<span class="tk-s">'cosine'</span>, embedding, @q), <span class="tk-n">4</span>) <span class="tk-k">AS</span> dist
+<span class="tk-k">FROM</span> dbo.Kb <span class="tk-k">ORDER</span> <span class="tk-k">BY</span> dist;</code></pre>
+<p>Question: <em>"how do I find semantically similar text in the database?"</em></p>
+<div class="cap o">↳ gerçek çıktı / real output</div>
+<pre class="out"><code>id  chunk                                                                                             dist
+--  ------------------------------------------------------------------------------------------------  ------
+1   SQL Server 2025 offers a built-in vector type and DiskANN index for semantic similarity search.   0.4082
+3   The native JSON type stores documents in a binary format and speeds up indexed queries.           0.7696
+4   Regular expression functions provide pattern matching and validation without CLR.                 0.8228</code></pre>
+<p>Semantic search works: although the question shares no keyword with it, the nearest document (0.41) is #1, which talks about <strong>semantic search</strong>; JSON (0.77) and RegEx (0.82) are clearly farther. The distance gap shows the ranking is genuinely meaning-based.</p>
+<p><strong>3) Serve it as an API, without writing a single line of code.</strong> Expose the same table over REST with Data API Builder (see Chapter 5.2); this too was verified myself:</p>
+<div class="cap o">↳ GET /api/Article?$first=2: real DAB response</div>
+<pre class="out"><code>{ "value": [
+    { "id": 1, "title": "Article 1", "embedding": [0.01, 0.02, 0.03, 0.04, 0.05] },
+    { "id": 2, "title": "Article 2", "embedding": [0.02, 0.04, 0.06, 0.08, 0.10] } ] }</code></pre>
+<p>The result: <strong>chunk (live) → embed (real model) → store (`vector`) → search (`VECTOR_DISTANCE`, live) → serve (DAB REST, live)</strong>, all database-centric, with no separate vector DB or search service.</p>
+<hr>
+<h1>12. SQL Server 2022 → 2025: Developer Differences</h1>
+<table><thead><tr><th>Topic</th><th>SQL Server 2022</th><th>SQL Server 2025</th></tr></thead><tbody><tr><td>Vector search</td><td>None (external vector DB)</td><td>Built-in <code>vector</code> type + <code>VECTOR_SEARCH</code> + DiskANN</td></tr><tr><td>Embedding generation</td><td>In the application layer</td><td>In T-SQL: <code>AI_GENERATE_EMBEDDINGS</code> / <code>EXTERNAL MODEL</code></td></tr><tr><td>JSON</td><td><code>nvarchar(max)</code> + functions</td><td>Real <code>json</code> type (binary, indexable)</td></tr><tr><td>Pattern matching</td><td><code>LIKE</code> / CLR</td><td>Built-in <code>REGEXP_*</code> functions</td></tr><tr><td>Concurrency</td><td>Classic locking</td><td>Optimized Locking (LAQ + TID)</td></tr><tr><td>API generation</td><td>Manual / external</td><td>Data API Builder (automatic REST/GraphQL)</td></tr><tr><td>Change streaming</td><td>CDC / CT</td><td>Change Event Streaming → Event Hubs</td></tr><tr><td>AI agent access</td><td>None</td><td>SQL MCP Server</td></tr><tr><td>.NET vectors</td><td>None</td><td><code>Microsoft.Data.SqlClient</code> 6.1 <code>SqlVector&lt;float&gt;</code>, EF Core 10</td></tr><tr><td>Compatibility level</td><td>160</td><td>170</td></tr></tbody></table>
+<hr>
+<h1>Appendices</h1>
+<p><em>Quick reference: glossary, primary sources and the author.</em></p>
+<h1>13. Glossary</h1>
+<ul><li><strong>Embedding</strong>: A fixed-length array of numbers (a vector) that represents the meaning of text/media.</li><li><strong>Vector (`vector(n)`)</strong>: An n-dimensional float32 array; the basis of similarity search.</li><li><strong>kNN (exact)</strong>: An <strong>exact</strong> search that compares against all rows to find the nearest k neighbors.</li><li><strong>ANN (approximate)</strong>: An <strong>approximate</strong>, much faster nearest-neighbor search over an index (DiskANN).</li><li><strong>DiskANN</strong>: A disk/scale-friendly graph-based approximate nearest neighbor index algorithm.</li><li><strong>RAG</strong>: Retrieval-Augmented Generation; fetching relevant chunks and giving them to an LLM as context.</li><li><strong>Cosine / Euclidean / Dot</strong>: the distance metrics supported by <code>VECTOR_DISTANCE</code>.</li><li><strong>LAQ</strong>: Lock After Qualification; the Optimized Locking mechanism that locks a row only after it qualifies.</li><li><strong>ADR / RCSI</strong>: Accelerated Database Recovery / Read Committed Snapshot Isolation; prerequisites of Optimized Locking.</li><li><strong>MCP</strong>: Model Context Protocol; a standard way for AI agents to access tools/data sources.</li><li><strong>CES</strong>: Change Event Streaming; publishing DML changes to Event Hubs as CloudEvents.</li><li><strong>DAB</strong>: Data API Builder; a tool that generates automatic REST/GraphQL from tables/views.</li><li><strong>TDS 8.0</strong>: Tabular Data Stream 8; the SQL Server wire protocol encrypted with TLS 1.3.</li><li><strong>PREVIEW_FEATURES</strong>: the database-scoped configuration that enables preview features.</li></ul>
+<hr>
+<h1>14. References</h1>
+<p>All feature and function names and their GA / preview status are verified against the primary Microsoft sources below; I executed the examples on SQL Server 2025 (RTM-CU7, 17.0.4065.4).</p>
+<ul><li>Microsoft Learn, What's New in SQL Server 2025 (17.x): https://learn.microsoft.com/en-us/sql/sql-server/what-s-new-in-sql-server-2025</li><li>CREATE EXTERNAL MODEL (T-SQL): https://learn.microsoft.com/en-us/sql/t-sql/statements/create-external-model-transact-sql</li><li>AI_GENERATE_EMBEDDINGS (T-SQL): https://learn.microsoft.com/en-us/sql/t-sql/functions/ai-generate-embeddings-transact-sql</li><li>AI_GENERATE_CHUNKS (T-SQL): https://learn.microsoft.com/en-us/sql/t-sql/functions/ai-generate-chunks-transact-sql</li><li>VECTOR_SEARCH (T-SQL): https://learn.microsoft.com/en-us/sql/t-sql/functions/vector-search-transact-sql</li><li>vector data type (T-SQL): https://learn.microsoft.com/en-us/sql/t-sql/data-types/vector-data-type</li><li>Vector support in SqlClient (ADO.NET): https://learn.microsoft.com/en-us/sql/connect/ado-net/sql/vector-data-sql-server</li><li>EF Core, SQL Server Vector Search: https://learn.microsoft.com/en-us/ef/core/providers/sql-server/vector-search</li><li>SqlVector with EF Core and Dapper (Azure SQL Dev Corner): https://devblogs.microsoft.com/azure-sql/using-the-new-sqlvector-type-with-ef-core-and-dapper/</li><li>SQL Server 2025 vectors/AI (Azure SQL Dev Corner): https://devblogs.microsoft.com/azure-sql/sql-server-2025-embraces-vectors-setting-the-foundation-for-empowering-your-data-with-ai/</li><li>JSON data type (T-SQL): https://learn.microsoft.com/en-us/sql/relational-databases/json/json-data-type</li><li>Optimized locking: https://learn.microsoft.com/en-us/sql/relational-databases/performance/optimized-locking</li><li>Data API Builder: https://learn.microsoft.com/en-us/azure/data-api-builder/overview</li><li>Change event streaming: https://learn.microsoft.com/en-us/sql/relational-databases/track-changes/change-event-streaming/overview</li><li>SQL Server 2025 Docker image: https://mcr.microsoft.com/en-us/product/mssql/server/about</li></ul>
+<h1>About the Author</h1>
+<figure class="img"><img src="brand/founder.jpg" alt="" style="width:2.0in"><figcaption>Çağlar Özenç: Founder, Microsoft Data Platform MVP</figcaption></figure>
+<p><strong>Çağlar Özenç</strong>, Founder and <strong>Microsoft Data Platform MVP</strong>.</p>
+<p>I have spent years working with SQL Server and data platforms: performance tuning, disaster recovery, backup and high availability are my core focus. DMC Bilgi Teknolojileri, the company I founded, has delivered hundreds of data projects across the public and private sectors over more than 15 years of field experience, managing databases with proactive consulting and 24/7 support. I wrote this book by testing what I have learned in the field directly on SQL Server 2025.</p>
+<p><strong>Personal site:</strong> <a href="https://caglarozenc.com">caglarozenc.com</a></p>
+<p><strong>Contact:</strong> <a href="https://dmcteknoloji.com">dmcteknoloji.com</a> · +90 212 945 61 66 · info@dmcteknoloji.com</p>
+<hr>
+<p><em>I validated the examples on a live SQL Server 2025 instance myself; verify exact syntax against your installed build and the official docs, preview features may change before GA.</em></p></body></html>

@@ -1,0 +1,31 @@
+SQL Server 2025 — Geliştirici Kitabı / Developer Handbook
+© 2026 DMC Bilgi Teknolojileri. Tüm hakları saklıdır / All rights reserved.
+
+--------------------------------------------------------------------------------
+İÇERİK LİSANSI / CONTENT LICENSE
+--------------------------------------------------------------------------------
+Bu depodaki e-book içeriği (metin, .docx ve Markdown dosyaları) Creative Commons
+Attribution 4.0 International (CC BY 4.0) ile lisanslanmıştır. Kaynak göstererek
+paylaşabilir ve uyarlayabilirsiniz.
+
+The ebook content in this repository (text, .docx and Markdown files) is licensed
+under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+You may share and adapt it with attribution.
+
+Lisans metni / License text: https://creativecommons.org/licenses/by/4.0/
+
+--------------------------------------------------------------------------------
+KOD ÖRNEKLERİ / CODE EXAMPLES
+--------------------------------------------------------------------------------
+examples/ klasöründeki T-SQL örnekleri herhangi bir kısıtlama olmadan (public
+domain / MIT tarzı) serbestçe kullanılabilir.
+
+The T-SQL examples in the examples/ folder may be used freely, without
+restriction (public-domain / MIT-style).
+
+--------------------------------------------------------------------------------
+Ticari markalar / Trademarks: "SQL Server", "Azure" ve "Microsoft Fabric"
+Microsoft Corporation'a aittir. Bu bağımsız bir eğitim kaynağıdır ve Microsoft
+tarafından onaylanmamıştır.
+"SQL Server", "Azure" and "Microsoft Fabric" are trademarks of Microsoft
+Corporation. This is an independent educational resource, not endorsed by Microsoft.
